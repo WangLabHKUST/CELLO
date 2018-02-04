@@ -73,7 +73,7 @@ disp(['Total elapsed time: ',num2str(toc)])
 
 ## Citation
 
-The abstract of this project has been submitted to [AsianEvo 2018](http://www.asianevo.org/), and is now under review.
+The abstract of this project has been accepted by [AsiaEvo 2018](http://www.asianevo.org/) for oral presentation.
 
 ## Contact
 
