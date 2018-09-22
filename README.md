@@ -1,5 +1,11 @@
 # CELLO - Cancer EvoLution for LOngitudinal data
 
+## Ownership
+[Wang Lab at HKUST](http://wang-lab.ust.hk/)
+
+## Status
+Active Development
+
 ## Introduction
 Cancer EvoLution for LOngitudinal data (CELLO) is a MATLAB toolbox for comprehensive analysis of longitudinal genomic sequencing data in cancer. It was originally developed by Jiguang Wang [1,2], and was then packed up by [Biaobin Jiang](https://github.com/bbjiang). The code was written in **MATLAB/R2016b**.
 
