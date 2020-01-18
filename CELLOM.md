@@ -1,59 +1,64 @@
 ## 1-Click to Run CELLO pipeline: play_cello.m
 ```matlab
-% Main function
-% CELLO: Cancer EvoLution for LOngitudinal data
+% Main Function of CELLO.M
+% CELLO.M: Cancer EvoLution for LOngitudinal data, a Matlab toolbox.
+
 close all
-addpath('./code/')
-% delete outMutContours directory to avoid warnings ...
+clear
+clc
+
 tic
 
-% Read savi report, the required 16 columns are:
-% 'chr','pos','ref','alt','id_cosmic','Effect_Impact','Amino_Acid_Change','Amino_Acid_length','Gene_Name',
-% 'Sgt1_max_frequency','Blood_freq','Primary_freq','Recurrent_freq','varPrefix','varSurfix','CaseID'
-
-savi = readtable('input.savi.report.txt');
-
-kdlist = {'ARID1A','ARID2','ATM','ATR','ATRX','BCOR','CDKN2A','CIC',...
-    'DICER1','EGFR','FAT1','FAT2','FAT3','FBXW7','FUBP1','IDH1','LTBP4',...
-    'MAX','MED12','MET','MTOR','NF1','NF2','NOTCH1','NOTCH2','PDGFRA',...
-    'PIK3CA','PIK3CG','PIK3R1','PTEN','PTPN11','RB1','SMARCA4','TCF12','TP53'};
-savi = markKnownDriver(kdlist,savi,'fast');
+savi = readtable('input.savi.txt');
 
 % Alternatively:
-%load inputSavi.mat
+% load inputSavi.mat
 
-filter = (savi.altdepth_Blood == 0 | (savi.altdepth_Blood == 1 & savi.refdepth_Blood >= 25)) & ...
+%% Preprocessing: Filtering somatic mutations
+
+somaticfilter = (savi.altdepth_Blood == 0 | (savi.altdepth_Blood == 1 & savi.refdepth_Blood >= 25)) & ...
     (savi.Sgt1_max_frequency >= 5);
-savi = savi(filter,:);
+savi = savi(somaticfilter,:);
 
-[HMplot, savi] = getHyperMut(savi);
+%% Marking key driver genes ...
 
-saviCase = getCaseInfo(savi);
-[saviMut,savi] = getMutInfo(savi);
-saviGene = getGeneInfo(savi);
+kdlist = {'TP53','ATRX','IDH1','EGFR','PTEN','PIK3CA','PIK3R1','PIK3CG','PDGFRA','RB1','NF1','PTPN11','LTBP4'};
+[savi,kdstr] = markKnownDriver(kdlist,savi);
 
-nmutPCR = plotMutContours(savi.CaseID, savi.Primary_freq, savi.Recurrent_freq,5,'plot');
-hbar = plotBars(nmutPCR);
-hmod = plotModuliSpace(nmutPCR);
+%% Mutational Landscape of Longitudinal Data
 
-[predDrivers,predStats,missGene] = Ensemble(saviGene,'plot');
-hroc = plotDriverROC(saviGene);
+hland = getLandscape(savi, kdstr);
 
-hgrid = plotGrids(predDrivers,saviCase);
-hsw = plotSwitch(predDrivers,savi);
-[hcom,~] = plotCoMut(predDrivers,'plot');
-h3d = plot3Dmut(predDrivers);
+%% co-occurrence of mutations
 
-evoGenes = {'EGFR','IDH1','RB1','MSH6','LRP1B','PIK3CA','PIK3R1','PIK3CG',...
-    'PTEN','NF1','TP53','ATRX','LTBP4','PDGFRA'};
-genTEDG(evoGenes, saviGene, saviCase.uniCase);
+hcom = corrMut(kdstr);
 
-writetable(saviCase, 'saviCase.txt','Delimiter','\t')
-writetable(saviGene, 'saviGene.txt','Delimiter','\t')
-writetable(saviMut, 'saviMut.txt','Delimiter','\t')
-writetable(predDrivers, 'predDrivers.txt','Delimiter','\t')
+%% 3D mutation plot
+
+h3d = plot3Dmut(kdstr);
+
+%% Mutational Signature Analysis
+
+hsig = getMutsigs(savi);
+
+%% Moduli Space
+
+hmod = getModuli(savi);
+
+%% TEDG with deconv?
+
+G = getTEDG(savi, true);
+
+%% Clonal Switching
+
+hsw = plotSwitch(savi,'PDGFRA');
+
+%% Output
+
+% save('outCELLO.mat')
 
 disp(['Total elapsed time: ',num2str(toc)])
+
 ```
 
 ## Reference
