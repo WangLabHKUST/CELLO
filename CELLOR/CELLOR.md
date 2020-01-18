@@ -22,8 +22,9 @@ library("igraph")
 
 ## CELLO Pipeline
 
+1. Load the savi report and conduct the somatic filter step
 ``` r
-savi.table<-somaticfilter("./input.savi.report.txt",25,4)
+savi.table<-somaticfilter("./input.savi.txt",25,4)
 head(savi.table[,1:12])
 ```
 
@@ -35,6 +36,8 @@ head(savi.table[,1:12])
     ## 5  11  20676292  TG   T           -               -          -           -                      -                     -                   frameshift_variant          HIGH
     ## 6  12  21422680   C   T rs772790612               -          - COSM3871273                      2                     -                   synonymous_variant           LOW
 
+
+2. Input the driver genes list and generate mutation numbers table
 ``` r
 knownDriverGene <- c('LTBP4','PTPN11','NF1','RB1','PDGFRA','PIK3CG','PIK3R1','PIK3CA','PTEN','EGFR','IDH1','ATRX','TP53')
 
@@ -51,6 +54,8 @@ head(mutNum.table)
     ## 5     R005      24     52        16
     ## 6     R006       5      6       167
 
+
+3. Generate the mutation landscape table
 ``` r
 mutGenes.table <- mutGenes(savi.table, knownDriverGene,5,remove_LOW = TRUE)
 head(mutGenes.table)
@@ -82,7 +87,7 @@ coMutation(mutGenes.table)
 freq.table <- freqMutation(savi.table, knownDriverGene,mutGenes.table,5)
 ```
 
-<img src="./img/unnamed-chunk-8-1.png" style="display: block; margin: auto;" />
+<div align=center><img src="./img/unnamed-chunk-8-1.png" width = 70% height = 70% style="display: block; margin: auto;" ></div>
 
 ``` r
 HM.table <- hyperMutation(savi.table,15,350,1.2)
