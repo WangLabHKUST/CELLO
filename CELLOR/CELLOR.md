@@ -76,7 +76,7 @@ coMutation(mutGenes.table)
 
     ## Warning: Removed 13 rows containing missing values (geom_point).
 
-<img src="./img/unnamed-chunk-7-1.png" width = 80% height = 80% style="display: block; margin: auto;" />
+<div align=center><img src="./img/unnamed-chunk-7-1.png" width = 70% height = 70% style="display: block; margin: auto;" ></div>
 
 ``` r
 freq.table <- freqMutation(savi.table, knownDriverGene,mutGenes.table,5)
@@ -90,8 +90,8 @@ HM.table <- hyperMutation(savi.table,15,350,1.2)
 
 <img src="./img/unnamed-chunk-9-1.png" style="display: block; margin: auto;" />
 
-    ## P-value between Primary and NonHM Recurrence: 0.161138148010592
-    ## P-value between Primary and HM Recurrence: 9.87242860746631e-06
+    ## P-value between Primary and NonHM Recurrence:       0.161138148010592
+    ## P-value between Primary and HM Recurrence:          9.87242860746631e-06
     ## P-value between NonHM Recurrence and HM Recurrence: 6.50689011385997e-05
 
 ``` r
