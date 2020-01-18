@@ -1,6 +1,7 @@
 # CELLO - Cancer EvoLution for LOngitudinal data
 
-<img src="logo.jpg" style="display: block; margin: auto;" />
+
+<div align=center><img width="300" height="300" src="logo.jpg" style="display: block; margin: auto;" />
 
 ## Ownership
 [Wang Lab at HKUST](http://wang-lab.ust.hk/)
