@@ -111,7 +111,7 @@ Cluster.table <- evoCluster(mutNum.table)
 switch.table <- mutSwitch(savi.table,knownDriverGene,5,20)
 ```
 
-<img src="./img/unnamed-chunk-11-1.png" style="display: block; margin: auto;" />
+<div align=center><img src="./img/unnamed-chunk-11-1.png" width = 80% height = 80% style="display: block; margin: auto;" ></div>
 
 
 ``` r
