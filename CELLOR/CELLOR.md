@@ -105,7 +105,7 @@ Cluster.table <- evoCluster(mutNum.table)
 
     ## Warning: Solution to limits produces range outside of [0,1] for some scales
 
-<div align=center><img src="./img/unnamed-chunk-10-1.png" width = 70% height = 70% style="display: block; margin: auto;" ></div>
+<div align=center><img src="./img/unnamed-chunk-10-1.png" width = 80% height = 80% style="display: block; margin: auto;" ></div>
 
 ``` r
 switch.table <- mutSwitch(savi.table,knownDriverGene,5,20)
