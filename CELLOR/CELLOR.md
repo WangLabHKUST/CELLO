@@ -68,7 +68,7 @@ head(mutGenes.table)
 mutLandscape(mutNum.table,mutGenes.table)
 ```
 
-<img src="CELLOR/img/unnamed-chunk-6-1.png" style="display: block; margin: auto;" />
+<img src="./img/unnamed-chunk-6-1.png" style="display: block; margin: auto;" />
 
 ``` r
 coMutation(mutGenes.table)
@@ -76,19 +76,19 @@ coMutation(mutGenes.table)
 
     ## Warning: Removed 13 rows containing missing values (geom_point).
 
-<img src="CELLOR/img/unnamed-chunk-7-1.png" style="display: block; margin: auto;" />
+<img src="./img/unnamed-chunk-7-1.png" width = 80% height = 80% style="display: block; margin: auto;" />
 
 ``` r
 freq.table <- freqMutation(savi.table, knownDriverGene,mutGenes.table,5)
 ```
 
-<img src="CELLOR/img/unnamed-chunk-8-1.png" style="display: block; margin: auto;" />
+<img src="./img/unnamed-chunk-8-1.png" style="display: block; margin: auto;" />
 
 ``` r
 HM.table <- hyperMutation(savi.table,15,350,1.2)
 ```
 
-<img src="CELLOR/img/unnamed-chunk-9-1.png" style="display: block; margin: auto;" />
+<img src="./img/unnamed-chunk-9-1.png" style="display: block; margin: auto;" />
 
     ## P-value between Primary and NonHM Recurrence: 0.161138148010592
     ## P-value between Primary and HM Recurrence: 9.87242860746631e-06
@@ -100,13 +100,13 @@ Cluster.table <- evoCluster(mutNum.table)
 
     ## Warning: Solution to limits produces range outside of [0,1] for some scales
 
-<img src="CELLOR/img/unnamed-chunk-10-1.png" style="display: block; margin: auto;" />
+<img src="./img/unnamed-chunk-10-1.png" style="display: block; margin: auto;" />
 
 ``` r
 switch.table <- mutSwitch(savi.table,knownDriverGene,5,20)
 ```
 
-<img src="CELLOR/img/unnamed-chunk-11-1.png" style="display: block; margin: auto;" />
+<img src="./img/unnamed-chunk-11-1.png" style="display: block; margin: auto;" />
 
 
 ``` r
@@ -115,7 +115,7 @@ allMutGenes.table <- mutGenes(savi.table, selGene,5,remove_LOW = TRUE)
 TEDGedge.table <- getTEDG(allMutGenes.table)
 ```
 
-<img src="CELLOR/img/unnamed-chunk-12-1.png" style="display: block; margin: auto;" />
+<img src="./img/unnamed-chunk-12-1.png" style="display: block; margin: auto;" />
 
 ``` r
 TEDGedge.table
