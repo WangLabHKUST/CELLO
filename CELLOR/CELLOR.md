@@ -3,22 +3,6 @@ CELLO: Cancer EvoLutionary analysis using LOngitudinal genomic data
 SONG, Dong
 1/15/2020
 
-## Ownership
-
-Wang Lab at HKUST (<http://wang-lab.ust.hk/>)
-
-## Introduction
-
-Cancer EvoLutionary analysis using LOngitudinal genomic data (CELLO) is
-a protocal for comprehensive analysis of longitudinal genomic sequencing
-data in cancer. It was originally developed by Jiguang Wang \[1,2\], and
-was then packed up by Biaobin Jiang and Dong Song in MATLAB and R
-seperately. This code was written in R.
-
-## Datasets
-
-The input SAVI report (input.savi.report.txt) consists of a list of
-genetic variants from 90 glioblastoma patients.
 
 ## Loading required R packages
 
@@ -28,59 +12,9 @@ library(gridExtra)
 library(grid)
 library(reshape2)
 library(ggtern)
-```
-
-    ## Registered S3 methods overwritten by 'ggtern':
-    ##   method           from   
-    ##   +.gg             ggplot2
-    ##   grid.draw.ggplot ggplot2
-    ##   plot.ggplot      ggplot2
-    ##   print.ggplot     ggplot2
-
-    ## --
-    ## Remember to cite, run citation(package = 'ggtern') for further info.
-    ## --
-
-    ## 
-    ## Attaching package: 'ggtern'
-
-    ## The following objects are masked from 'package:gridExtra':
-    ## 
-    ##     arrangeGrob, grid.arrange
-
-    ## The following objects are masked from 'package:ggplot2':
-    ## 
-    ##     %+%, aes, annotate, calc_element, ggplot, ggplot_build,
-    ##     ggplot_gtable, ggplotGrob, ggsave, layer_data, theme, theme_bw,
-    ##     theme_classic, theme_dark, theme_gray, theme_light, theme_linedraw,
-    ##     theme_minimal, theme_void
-
-``` r
 library(ggalt)
-```
-
-    ## Registered S3 methods overwritten by 'ggalt':
-    ##   method                  from   
-    ##   grid.draw.absoluteGrob  ggplot2
-    ##   grobHeight.absoluteGrob ggplot2
-    ##   grobWidth.absoluteGrob  ggplot2
-    ##   grobX.absoluteGrob      ggplot2
-    ##   grobY.absoluteGrob      ggplot2
-
-``` r
 library("igraph")
 ```
-
-    ## 
-    ## Attaching package: 'igraph'
-
-    ## The following objects are masked from 'package:stats':
-    ## 
-    ##     decompose, spectrum
-
-    ## The following object is masked from 'package:base':
-    ## 
-    ##     union
 
 ## Loading CELLO functions
 
@@ -93,27 +27,13 @@ savi.table<-somaticfilter("./input.savi.report.txt",25,4)
 head(savi.table[,1:12])
 ```
 
-    ##   chr       pos ref alt      id_snp snp_allele_freq snp_common   id_cosmic
-    ## 1  10   5248362   T   C           -               -          -           -
-    ## 2  10  27703023   A   T           -               -          -           -
-    ## 3  10 122263428   G   A rs747041396               -          -           -
-    ## 4  11    209598   C   T           -               -          -           -
-    ## 5  11  20676292  TG   T           -               -          -           -
-    ## 6  12  21422680   C   T rs772790612               -          - COSM3871273
-    ##   cosmic_n_samples_mut cosmic_n_samples_gene
-    ## 1                    -                     -
-    ## 2                    -                     -
-    ## 3                    -                     -
-    ## 4                    -                     -
-    ## 5                    -                     -
-    ## 6                    2                     -
-    ##                                Effect Effect_Impact
-    ## 1 splice_donor_variant+intron_variant          HIGH
-    ## 2                    missense_variant      MODERATE
-    ## 3                    missense_variant      MODERATE
-    ## 4                  synonymous_variant           LOW
-    ## 5                  frameshift_variant          HIGH
-    ## 6                  synonymous_variant           LOW
+    ##   chr       pos ref alt      id_snp snp_allele_freq snp_common   id_cosmic   cosmic_n_samples_mut cosmic_n_samples_gene                               Effect Effect_Impact
+    ## 1  10   5248362   T   C           -               -          -           -                      -                     -  splice_donor_variant+intron_variant          HIGH
+    ## 2  10  27703023   A   T           -               -          -           -                      -                     -                     missense_variant      MODERATE
+    ## 3  10 122263428   G   A rs747041396               -          -           -                      -                     -                     missense_variant      MODERATE
+    ## 4  11    209598   C   T           -               -          -           -                      -                     -                   synonymous_variant           LOW
+    ## 5  11  20676292  TG   T           -               -          -           -                      -                     -                   frameshift_variant          HIGH
+    ## 6  12  21422680   C   T rs772790612               -          - COSM3871273                      2                     -                   synonymous_variant           LOW
 
 ``` r
 knownDriverGene <- c('LTBP4','PTPN11','NF1','RB1','PDGFRA','PIK3CG','PIK3R1','PIK3CA','PTEN','EGFR','IDH1','ATRX','TP53')
@@ -188,6 +108,7 @@ switch.table <- mutSwitch(savi.table,knownDriverGene,5,20)
 
 <img src="CELLOR/img/unnamed-chunk-11-1.png" style="display: block; margin: auto;" />
 
+
 ``` r
 selGene <-c('LTBP4','IDH1','ATRX','TP53','NF1','MSH6','PIK3CG','PIK3R1','PIK3CA','PTEN','EGFR')
 allMutGenes.table <- mutGenes(savi.table, selGene,5,remove_LOW = TRUE)
@@ -232,13 +153,7 @@ TEDGedge.table
     ## 29 "PTEN"   "PIK3CG" "1"    "R042"                              
     ## 30 "PIK3R1" "PTEN"   "1"    "R024"
 
-## Reference
+## Contact
 
-\[1\] Wang, J., Cazzato, E., Ladewig, E., Frattini, V., Rosenbloom, D.
-I., Zairis, S., … & Lee, J. K. (2016). Clonal evolution of glioblastoma
-under therapy. Nature Genetics, 48(7), 768-776.
+For any technical questions about this R code, please contact Dong Song via email: dsongad AT connect.ust.hk
 
-\[2\] Wang, J., Khiabanian, H., Rossi, D., Fabbri, G., Gattei, V.,
-Forconi, F., … & Pasqualucci, L. (2014). Tumor evolutionary directed
-graphs and the history of chronic lymphocytic leukemia. Elife, 3,
-e02869.
