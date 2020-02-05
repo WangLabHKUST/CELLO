@@ -17,8 +17,8 @@ seperately. This code was written in R.
 
 ## Datasets
 
-The input SAVI report (input.savi.report.txt) consists of a list of
-genetic variants from 90 glioblastoma patients.
+The input SAVI report (input.savi.txt) consists of a list of genetic
+variants from 90 glioblastoma patients.
 
 ## Loading required R packages
 
@@ -89,31 +89,31 @@ library("igraph")
 ## CELLO Pipeline
 
 ``` r
-savi.table<-somaticfilter("../input.savi.report.txt",25,4)
+savi.table<-somaticfilter("../../input.savi.txt",20,1,5)
 head(savi.table[,1:12])
 ```
 
-    ##   chr       pos ref alt      id_snp snp_allele_freq snp_common   id_cosmic
-    ## 1  10   5248362   T   C           -               -          -           -
-    ## 2  10  27703023   A   T           -               -          -           -
-    ## 3  10 122263428   G   A rs747041396               -          -           -
-    ## 4  11    209598   C   T           -               -          -           -
-    ## 5  11  20676292  TG   T           -               -          -           -
-    ## 6  12  21422680   C   T rs772790612               -          - COSM3871273
-    ##   cosmic_n_samples_mut cosmic_n_samples_gene
-    ## 1                    -                     -
-    ## 2                    -                     -
-    ## 3                    -                     -
-    ## 4                    -                     -
-    ## 5                    -                     -
-    ## 6                    2                     -
-    ##                                Effect Effect_Impact
-    ## 1 splice_donor_variant+intron_variant          HIGH
-    ## 2                    missense_variant      MODERATE
-    ## 3                    missense_variant      MODERATE
-    ## 4                  synonymous_variant           LOW
-    ## 5                  frameshift_variant          HIGH
-    ## 6                  synonymous_variant           LOW
+    ##     chr       pos ref alt                              Effect Effect_Impact
+    ## 1 chr10   5248362   T   C splice_donor_variant+intron_variant          HIGH
+    ## 2 chr10  27703023   A   T                    missense_variant      MODERATE
+    ## 3 chr10 122263428   G   A                    missense_variant      MODERATE
+    ## 4 chr11    209598   C   T                  synonymous_variant           LOW
+    ## 5 chr11  20676292  TG   T                  frameshift_variant          HIGH
+    ## 6 chr12  21422680   C   T                  synonymous_variant           LOW
+    ##   Functional_Class Codon_Change Amino_Acid_Change Amino_Acid_length Gene_Name
+    ## 1                -            -                 -               323    AKR1C4
+    ## 2         MISSENSE      Tcc/Acc              S53T               767    PTCHD3
+    ## 3         MISSENSE      cGc/cAc              R52H               271  PPAPDC1A
+    ## 4           SILENT      tcC/tcT              S108               537     RIC8A
+    ## 5                -         tgg/              W758               797    SLC6A5
+    ## 6           SILENT      ccG/ccA              P605               670   SLCO1A2
+    ##   Sgt1_max_frequency
+    ## 1                 35
+    ## 2                 32
+    ## 3                 42
+    ## 4                 12
+    ## 5                 21
+    ## 6                 35
 
 ``` r
 knownDriverGene <- c('LTBP4','PTPN11','NF1','RB1','PDGFRA','PIK3CG','PIK3R1','PIK3CA','PTEN','EGFR','IDH1','ATRX','TP53')
@@ -124,12 +124,12 @@ head(mutNum.table)
 ```
 
     ##   Patients Primary Common Recurrent
-    ## 1     R001       4     58         2
+    ## 1     R001       4     56         2
     ## 2     R002      23     46        19
     ## 3     R003      49      1         1
-    ## 4     R004       2     48         4
-    ## 5     R005      24     52        16
-    ## 6     R006       5      6       167
+    ## 4     R004       2     45         4
+    ## 5     R005      23     50        16
+    ## 6     R006       5      6       165
 
 ``` r
 mutGenes.table <- mutGenes(savi.table, knownDriverGene,5,remove_LOW = TRUE)
@@ -170,9 +170,9 @@ HM.table <- hyperMutation(savi.table,15,350,1.2)
 
 <img src="CELLOR_files/figure-gfm/unnamed-chunk-9-1.png" style="display: block; margin: auto;" />
 
-    ## P-value between Primary and NonHM Recurrence: 0.161138148010592
-    ## P-value between Primary and HM Recurrence: 9.87242860746631e-06
-    ## P-value between NonHM Recurrence and HM Recurrence: 6.50689011385997e-05
+    ## P-value between Primary and NonHM Recurrence: 0.229260285986123
+    ## P-value between Primary and HM Recurrence: 2.59649100398582e-06
+    ## P-value between NonHM Recurrence and HM Recurrence: 4.38254782225301e-05
 
 ``` r
 Cluster.table <- evoCluster(mutNum.table)
@@ -204,7 +204,7 @@ TEDGedge.table
     ## 1  "IDH1"   "LTBP4"  "3"    "R027;R049;R055"                    
     ## 2  "ATRX"   "LTBP4"  "1"    "R049"                              
     ## 3  "TP53"   "LTBP4"  "3"    "R027;R049;R055"                    
-    ## 4  "PTEN"   "LTBP4"  "2"    "R007;R039"                         
+    ## 4  "PTEN"   "LTBP4"  "1"    "R039"                              
     ## 5  "EGFR"   "LTBP4"  "2"    "R022;R039"                         
     ## 6  "IDH1"   "TP53"   "1"    "R054"                              
     ## 7  "IDH1"   "NF1"    "5"    "R043;R049;R051;R053;R055"          
@@ -227,7 +227,7 @@ TEDGedge.table
     ## 24 "EGFR"   "TP53"   "2"    "R022;R039"                         
     ## 25 "NF1"    "PIK3CG" "1"    "R042"                              
     ## 26 "PIK3R1" "NF1"    "1"    "R100"                              
-    ## 27 "PTEN"   "MSH6"   "2"    "R007;R039"                         
+    ## 27 "PTEN"   "MSH6"   "1"    "R039"                              
     ## 28 "EGFR"   "MSH6"   "2"    "R022;R039"                         
     ## 29 "PTEN"   "PIK3CG" "1"    "R042"                              
     ## 30 "PIK3R1" "PTEN"   "1"    "R024"
