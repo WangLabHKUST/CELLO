@@ -18,9 +18,9 @@ gg_color_hue <- function(n) {
 
 
 #function 1: read in savi report & preprocessing the data
-somaticfilter <- function(savi_report_file,refdepth_Blood_cutoff,freq_cutoff){
+somaticfilter <- function(savi_report_file,refdepth_Blood_cutoff,altdepth_Blood_cutoff,freq_cutoff){
 	savi <- read.delim(savi_report_file)
-	savi <- savi[which( (savi$altdepth_Blood == 0 | (savi$altdepth_Blood == 1 & savi$refdepth_Blood >= refdepth_Blood_cutoff)) & (savi$Sgt1_max_frequency >= freq_cutoff) ),]
+	savi <- savi[which( savi$refdepth_Blood >= refdepth_Blood_cutoff & savi$altdepth_Blood <= altdepth_Blood_cutoff & savi$Sgt1_max_frequency >= freq_cutoff ),]
 	savi[is.na(savi)] <- 0
 	#savi <- savi[which(!(savi$Effect_Impact %in% 'LOW')),]
 
@@ -801,7 +801,7 @@ getTEDG <- function(mutation_gene_table){
 
 
 #User protocol
-savi.table<-somaticfilter("../input.savi.report.txt",25,4)
+savi.table<-somaticfilter("../../input.savi.txt",20,1,5)
 
 mutNum.table <- mutStatistics(savi.table,5)
 
