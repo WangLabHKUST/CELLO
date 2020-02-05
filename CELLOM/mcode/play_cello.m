@@ -1,5 +1,5 @@
-% Main Function of CELLO.M
 % CELLO.M: Cancer EvoLution for LOngitudinal data, a Matlab toolbox.
+% Main Function: play_cello.m
 
 close all
 clear
@@ -7,15 +7,11 @@ clc
 
 tic
 
-savi = readtable('input.savi.txt');
-
-% Alternatively:
-% load inputSavi.mat
+savi = readtable('../../input.savi.txt');
 
 %% Preprocessing: Filtering somatic mutations
 
-somaticfilter = (savi.altdepth_Blood == 0 | (savi.altdepth_Blood == 1 & savi.refdepth_Blood >= 25)) & ...
-    (savi.Sgt1_max_frequency >= 5);
+somaticfilter = savi.refdepth_Blood >= 20 & savi.altdepth_Blood <= 1 & savi.Sgt1_max_frequency >= 5;
 savi = savi(somaticfilter,:);
 
 %% Marking key driver genes ...
@@ -50,9 +46,3 @@ G = getTEDG(savi, true);
 %% Clonal Switching
 
 hsw = plotSwitch(savi,'PDGFRA');
-
-%% Output
-
-% save('outCELLO.mat')
-
-disp(['Total elapsed time: ',num2str(toc)])

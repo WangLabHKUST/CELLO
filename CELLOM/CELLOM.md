@@ -1,7 +1,7 @@
 ## 1-Click to Run CELLO pipeline: play_cello.m
 ```matlab
-% Main Function of CELLO.M
 % CELLO.M: Cancer EvoLution for LOngitudinal data, a Matlab toolbox.
+% Main Function: play_cello.m
 
 close all
 clear
@@ -9,15 +9,11 @@ clc
 
 tic
 
-savi = readtable('input.savi.txt');
-
-% Alternatively:
-% load inputSavi.mat
+savi = readtable('../../input.savi.txt');
 
 %% Preprocessing: Filtering somatic mutations
 
-somaticfilter = (savi.altdepth_Blood == 0 | (savi.altdepth_Blood == 1 & savi.refdepth_Blood >= 25)) & ...
-    (savi.Sgt1_max_frequency >= 5);
+somaticfilter = savi.refdepth_Blood >= 20 & savi.altdepth_Blood <= 1 & savi.Sgt1_max_frequency >= 5;
 savi = savi(somaticfilter,:);
 
 %% Marking key driver genes ...
@@ -53,24 +49,4 @@ G = getTEDG(savi, true);
 
 hsw = plotSwitch(savi,'PDGFRA');
 
-%% Output
-
-% save('outCELLO.mat')
-
-disp(['Total elapsed time: ',num2str(toc)])
-
 ```
-
-## Reference
-
-[1] Wang, J., Cazzato, E., Ladewig, E., Frattini, V., Rosenbloom, D. I., Zairis, S., ... & Lee, J. K. (2016). Clonal evolution of glioblastoma under therapy. **Nature Genetics**, 48(7), 768-776.
-
-[2] Wang, J., Khiabanian, H., Rossi, D., Fabbri, G., Gattei, V., Forconi, F., ... & Pasqualucci, L. (2014). Tumor evolutionary directed graphs and the history of chronic lymphocytic leukemia. **Elife**, 3, e02869.
-
-## Citation
-
-The abstract of this project has been accepted by [AsiaEvo 2018](http://www.asianevo.org/) for oral presentation.
-
-## Contact
-
-For technical questions, please contact Biaobin via email: biaobinjiang@gmail.com
