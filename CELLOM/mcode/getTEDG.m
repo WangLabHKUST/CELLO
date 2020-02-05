@@ -70,7 +70,7 @@ end
 %% Start printing for Cytoscape ...
 
 % Edge Table
-fedge = fopen('cyto.TEDG.edgetable.txt','w');
+fedge = fopen('../output/cyto.TEDG.edgetable.txt','w');
 fprintf(fedge, 'EarlyIdx\tLateIdx\tEarlyGene\tLateGene\tNumOccurrences\tSampleIDs\n');
 
 [u,v,ew] = find(A);
@@ -116,7 +116,7 @@ for i = 1:ng
 end
 Log2FC = log2((outs+1)./(ins+1)); % positive = early; negative = late.
 
-fnode = fopen('cyto.TEDG.nodetable.txt','w');
+fnode = fopen('../output/cyto.TEDG.nodetable.txt','w');
 fprintf(fnode, 'GeneName\tP_CDF\tLog2FC\tOccurrence\n');
 for i = 1:ng
     fprintf(fnode, '%s\t%f\t%f\t%f\n', evogenes{i}, pcdf(i), Log2FC(i), Occurrence(i));
@@ -127,13 +127,13 @@ fclose(fnode);
 % NOTE: The following code works only for the default gene list with
 % predetermined layout.
 
-Edgetable = readtable('cyto.TEDG.edgetable.txt');
+Edgetable = readtable('../output/cyto.TEDG.edgetable.txt');
 
 if ~isdeconv
     Edgetable = Edgetable(Edgetable.NumOccurrences > 1 | strcmp(Edgetable.LateGene,'PIK3CG') | strcmp(Edgetable.LateGene,'PIK3R1'),:);
 end
 
-Nodetable = readtable('cyto.TEDG.nodetable.txt');
+Nodetable = readtable('../output/cyto.TEDG.nodetable.txt');
 G = digraph(Edgetable.EarlyIdx,Edgetable.LateIdx,Edgetable,Nodetable);
 
 Nodetable.X = [0;-1.2;1;-1.8;-2.3;0.5;-2.3;-0.5;-3;2;3];

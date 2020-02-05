@@ -29,9 +29,15 @@ F = PCR./repmat(sum(PCR,2), 1, 3); % normalization
 B = 1./(F(:,1).^2+F(:,2).^2+ F(:,3).^2)*ones(1,3);
 S = F.*sqrt(B);
 
-colors = {'r';'y';'k'};
-rng(5)
+rng(1)
 idx = kmeans(S,3,'Replicates',5);
+colors = cell(3,1);
+[~,i1] = max(S(:,1));
+colors{idx(i1)} = 'r';
+[~,i2] = max(S(:,2));
+colors{idx(i2)} = 'y';
+[~,i3] = max(S(:,3));
+colors{idx(i3)} = 'k';
 
 r = 50*0.0005+0.006;
 for i = 1:numcases
