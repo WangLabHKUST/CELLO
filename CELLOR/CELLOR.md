@@ -148,7 +148,7 @@ head(mutGenes.table)
 mutLandscape(mutNum.table,mutGenes.table)
 ```
 
-<img src="CELLOR_files/figure-gfm/unnamed-chunk-6-1.png" style="display: block; margin: auto;" />
+<img src="Output/img/unnamed-chunk-6-1.png" style="display: block; margin: auto;" />
 
 ``` r
 coMutation(mutGenes.table)
@@ -156,19 +156,19 @@ coMutation(mutGenes.table)
 
     ## Warning: Removed 13 rows containing missing values (geom_point).
 
-<img src="CELLOR_files/figure-gfm/unnamed-chunk-7-1.png" style="display: block; margin: auto;" />
+<img src="Output/img/unnamed-chunk-7-1.png" style="display: block; margin: auto;" />
 
 ``` r
 freq.table <- freqMutation(savi.table, knownDriverGene,mutGenes.table,5)
 ```
 
-<img src="CELLOR_files/figure-gfm/unnamed-chunk-8-1.png" style="display: block; margin: auto;" />
+<img src="Output/img/unnamed-chunk-8-1.png" style="display: block; margin: auto;" />
 
 ``` r
 HM.table <- hyperMutation(savi.table,15,350,1.2)
 ```
 
-<img src="CELLOR_files/figure-gfm/unnamed-chunk-9-1.png" style="display: block; margin: auto;" />
+<img src="Output/img/unnamed-chunk-9-1.png" style="display: block; margin: auto;" />
 
     ## P-value between Primary and NonHM Recurrence: 0.229260285986123
     ## P-value between Primary and HM Recurrence: 2.59649100398582e-06
@@ -180,13 +180,13 @@ Cluster.table <- evoCluster(mutNum.table)
 
     ## Warning: Solution to limits produces range outside of [0,1] for some scales
 
-<img src="CELLOR_files/figure-gfm/unnamed-chunk-10-1.png" style="display: block; margin: auto;" />
+<img src="Output/img/unnamed-chunk-10-1.png" style="display: block; margin: auto;" />
 
 ``` r
 switch.table <- mutSwitch(savi.table,knownDriverGene,5,20)
 ```
 
-<img src="CELLOR_files/figure-gfm/unnamed-chunk-11-1.png" style="display: block; margin: auto;" />
+<img src="Output/img/unnamed-chunk-11-1.png" style="display: block; margin: auto;" />
 
 ``` r
 selGene <-c('LTBP4','IDH1','ATRX','TP53','NF1','MSH6','PIK3CG','PIK3R1','PIK3CA','PTEN','EGFR')
@@ -194,7 +194,7 @@ allMutGenes.table <- mutGenes(savi.table, selGene,5,remove_LOW = TRUE)
 TEDGedge.table <- getTEDG(allMutGenes.table)
 ```
 
-<img src="CELLOR_files/figure-gfm/unnamed-chunk-12-1.png" style="display: block; margin: auto;" />
+<img src="Output/img/unnamed-chunk-12-1.png" style="display: block; margin: auto;" />
 
 ``` r
 TEDGedge.table
