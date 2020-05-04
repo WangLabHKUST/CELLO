@@ -18,7 +18,7 @@ Cancer EvoLution for LOngitudinal data (CELLO) is a MATLAB toolbox for comprehen
 
 ## Docker
 
-To ensure reproducibility and improve usability, we have prepared a [docker] (https://www.docker.com/) version of CELLO, based and the R implementation. The docker can be retrieved by
+To ensure reproducibility and improve usability, we have prepared a [docker](https://www.docker.com/) version of CELLO, based and the R implementation. The docker can be retrieved by
 ```
 docker pull qmu123/cellor
 ```
