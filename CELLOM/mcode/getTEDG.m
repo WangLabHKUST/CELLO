@@ -63,8 +63,9 @@ end
 
 if isdeconv
     B = A + A';
-    [~,~,bv] = find(B);
-    T = full(mst(spones(B),'algname','kruskal','root',1,'edge_weight',-bv));
+    %[~,~,bv] = find(B);
+    %T0 = full(mst(spones(B),'algname','kruskal','root',1,'edge_weight',-bv));
+    T1 = full(adjacency(minspantree(graph(0 - B, evogenes),'Root',1)));
 end
 
 %% Start printing for Cytoscape ...
@@ -76,7 +77,7 @@ fprintf(fedge, 'EarlyIdx\tLateIdx\tEarlyGene\tLateGene\tNumOccurrences\tSampleID
 [u,v,ew] = find(A);
 for i = 1:length(u)
     if isdeconv
-        if ew(i) >= 3 || T(u(i),v(i)) ~= 0
+        if ew(i) >= 3 || T1(u(i),v(i)) ~= 0
             fprintf(fedge,'%d\t%d\t%s\t%s\t%s\t%s\n', ...
                 u(i), ...
                 v(i), ...
