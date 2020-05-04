@@ -22,7 +22,7 @@ To ensure reproducibility and improve usability, we have prepared a [docker](htt
 ```
 docker pull qmu123/cellor
 ```
-Alternatively, one can build the docker image from scratch. The docker file is uploaded to [this repository](./CELLOR/Dockerfile). Download the Dockerfile and CELLOR.R into a directory, then build the image from there by:
+Alternatively, one can build the docker image from scratch. The docker file is uploaded to this repository. Download the [Dockerfile](./CELLOR/Dockerfile) and [CELLOR.R](./CELLOR/CELLOR.R) into a directory, then build the image from there by:
 ```
 docker build -t cellor .
 ```
