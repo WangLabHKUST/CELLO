@@ -1,7 +1,7 @@
 # CELLO - Cancer EvoLution for LOngitudinal data
 
 
-<div align=center><img width="300" src="logo.jpg" style="display: block; margin: auto;" ></div>
+<div align=center><img width="300" height="300" src="logo.jpg" style="display: block; margin: auto;" ></div>
 
 ## Ownership
 [Wang Lab at HKUST](http://wang-lab.ust.hk/)
@@ -16,14 +16,6 @@ Cancer EvoLution for LOngitudinal data (CELLO) is a MATLAB toolbox for comprehen
 * [MATLAB](./CELLOM/CELLOM.md)
 * [R](./CELLOR/CELLOR.md)
 
-To ensure reproducibility and improve usability, we have prepared a docker version of CELLO, based and the R implementation. The docker can be retrieved by
-```
-docker pull qmu123/cellor
-```
-Alternatively, one can build the docker image from scratch. The docker file is uploaded to [this repository](./CELLOR/Dockerfile). Download the Dockerfile and CELLOR.R into a directory, then build the image from there by:
-```
-docker build -t cellor .
-```
 ## Datasets
 
 The input [SAVI report](./input.savi.txt) consists of a list of genetic variants from 90 glioblastoma patients [1].

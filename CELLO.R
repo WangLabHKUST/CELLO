@@ -1,25 +1,9 @@
----
-title: "CELLO: Cancer EvoLutionary analysis using LOngitudinal genomic data"
-author: "SONG, Dong"
-date: "1/15/2020"
-output: github_document
----
+# CELLOR
+#frame_files <- lapply(sys.frames(), function(x) x$ofile)
+#frame_files <- Filter(Negate(is.null), frame_files)
+#TOPDIR <- dirname(frame_files[[length(frame_files)]])
+#setwd(TOPDIR)
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-## Ownership
-Wang Lab at HKUST (http://wang-lab.ust.hk/)
-
-## Introduction
-Cancer EvoLutionary analysis using LOngitudinal genomic data (CELLO) is a protocal for comprehensive analysis of longitudinal genomic sequencing data in cancer. It was originally developed by Jiguang Wang [1,2], and was then packed up by Biaobin Jiang and Dong Song in MATLAB and R seperately. This code was written in R.
-
-## Datasets
-The input SAVI report (input.savi.txt) consists of a list of genetic variants from 90 glioblastoma patients.
-
-## Loading required R packages
-```{r}
 library(ggplot2)
 library(gridExtra)
 library(grid)
@@ -27,16 +11,12 @@ library(reshape2)
 library(ggtern)
 library(ggalt)
 library("igraph")
-```
 
-## Loading CELLO functions
-......
-
-```{r , include=FALSE}
 gg_color_hue <- function(n) {
   hues = seq(15, 375, length = n + 1)
   hcl(h = hues, l = 65, c = 120)[1:n]
 }
+
 
 #function 1: read in savi report & preprocessing the data
 somaticfilter <- function(savi_report_file,refdepth_Blood_cutoff,altdepth_Blood_cutoff,freq_cutoff){
@@ -168,9 +148,9 @@ mutLandscape <- function(mutation_num_table, mutation_gene_table){
 
 	F1b.plot<-ggplot()+theme_classic()
 	F1b.plot<-F1b.plot+geom_tile(data = plot_1b.data,aes(x=Var1,y=Var2,fill=value),color='black',width=0.7,height=0.7,stat='identity')
-	F1b.plot<-F1b.plot+scale_fill_manual(name=NULL,values=c(N='white',C=gg_color_hue(2)[2],P=gg_color_hue(2)[1],R='black'),labels=c(N='None',C='Common',P='Initial',R='Recurrence'))
+	F1b.plot<-F1b.plot+scale_fill_manual(name=NULL,values=c(N='white',C=gg_color_hue(2)[2],P=gg_color_hue(2)[1],R='black'),labels=c(N='None',C='Common',P='Primary',R='Recurrence'))
 	F1b.plot<-F1b.plot+theme(panel.background=element_rect(fill='transparent',color='black'),plot.margin=unit(c(0.15,0.6,3,2),'lines'),plot.title=element_text(size=24,vjust=0.5,hjust=0.5,face='bold.italic'),
-	                           text=element_text(size=24,vjust=1.4,hjust=0.5,face='bold'),legend.key.width=unit(0.6,'cm'),legend.key.height=unit(0.68,'cm'),legend.position=c(0.5,-0.1),
+	                           text=element_text(size=24,vjust=1.4,hjust=0.5,face='bold'),legend.key.width=unit(0.6,'cm'),legend.key.height=unit(0.68,'cm'),legend.position=c(0.5,-0.08),
 							              legend.direction="horizontal",legend.text=element_text(size=16,face='bold.italic'),axis.text.y=element_text(size=14,vjust=0.5,hjust=1,face='bold.italic',color='black'),
 							            axis.text.x=element_blank(),axis.title.x=element_text(size=24,vjust=0,hjust=0.5,face='bold',color='black'),axis.title.y=element_text(size=24,hjust=0.5,vjust=2,face='bold',color='black'))
 	F1b.plot<-F1b.plot+scale_x_discrete(breaks=x.scale,position = "top")+xlab(NULL)+ylab(NULL)
@@ -179,7 +159,7 @@ mutLandscape <- function(mutation_num_table, mutation_gene_table){
 	panels <- figure_1$layout$t[grep("panel", figure_1$layout$name)]
 	figure_1$heights[panels][1] <- unit(0.513,'null')
 	grid.draw(figure_1)
-	ggsave(file="../Output/Figure1_mutation_landscape.pdf", plot=figure_1,bg = 'white', width = 40, height = 33, units = 'cm', dpi = 600)
+	ggsave(file="Figure1_mutation_landscape.pdf", plot=figure_1,bg = 'white', width = 40, height = 33, units = 'cm', dpi = 600)
 
 	x.scale <<- NULL
 	orderID <<- NULL
@@ -282,11 +262,12 @@ coMutation <- function(mutation_gene_table){
 
 	figure_2<-rbind(ggplotGrob(coMut.plot),size="first")
 	grid.draw(figure_2)
-	ggsave(file="../Output/Figure2_CoMutation.pdf", plot=figure_2,bg = 'white', width = 20, height = 22, units = 'cm', dpi = 600)
+	ggsave(file="Figure2_CoMutation.pdf", plot=figure_2,bg = 'white', width = 20, height = 22, units = 'cm', dpi = 600)
 
 	x.scale <<- NULL
 	orderID <<- NULL
 }
+
 
 #function 6: 3D-bubble plot of mutation frequency
 freqMutation <- function(savi_table, selected_geneList, mutation_gene_table, freq_cutoff){
@@ -365,7 +346,7 @@ freqMutation <- function(savi_table, selected_geneList, mutation_gene_table, fre
 	figure_3 <- rbind(ggplotGrob(freq.plot),size="first")
 	grid.draw(figure_3)
 
-	ggsave(file="../Output/Figure3_3D_bubble_plot.pdf", plot=figure_3,bg = 'white', width = 28, height = 20, units = 'cm', dpi = 600)
+	ggsave(file="Figure3_3D_bubble_plot.pdf", plot=figure_3,bg = 'white', width = 28, height = 20, units = 'cm', dpi = 600)
 
 	return(Mut.freq)
 }
@@ -579,7 +560,7 @@ hyperMutation <- function(savi_table, mut_freq_cutoff, mut_num_cutoff, HM_score_
 
 	figure_4<-cbind(ggplotGrob(HM.plot),ggplotGrob(Fra.plot),ggplotGrob(Box.plot),size="first")
 	grid.draw(figure_4)
-	ggsave(file="../Output/Figure4_hypermutation_analysis.pdf", plot=figure_4,bg = 'white', width = 48, height = 17, units = 'cm', dpi = 600)
+	ggsave(file="Figure4_hypermutation_analysis.pdf", plot=figure_4,bg = 'white', width = 48, height = 17, units = 'cm', dpi = 600)
 
 	cutMutLoad <<- NULL
 	cutHMscore <<- NULL
@@ -619,7 +600,7 @@ evoCluster <- function(mutation_num_table){
 
 	figure5<-rbind(ggplotGrob(Ternary.plot),size="last")
 	grid.draw(figure5)
-	ggsave(file="../Output/Figure5_Case_Clustering.pdf", plot=figure5,bg = 'white', width = 24, height = 20, units = 'cm', dpi = 600)
+	ggsave(file="Figure5_Case_Clustering.pdf", plot=figure5,bg = 'white', width = 24, height = 20, units = 'cm', dpi = 600)
 
 	return(plot_5.data)
 }
@@ -695,8 +676,8 @@ mutSwitch <- function(savi_table, selected_geneList, freq_cutoff_low,freq_cutoff
 	Switch.plot<-Switch.plot+facet_wrap( ~ CaseGene,ncol=numCols )
 	figure_6<-rbind(ggplotGrob(Switch.plot), size="last")
 	grid.draw(figure_6)
-	ggsave(file="../Output/Figure6_mutation_Switch.pdf", plot=figure_6, bg = 'white', width = 7*numCols, height = 7*numRows-1, units = 'cm', dpi = 600)
-	
+	ggsave(file="Figure6_mutation_Switch.pdf", plot=figure_6, bg = 'white', width = 7*numCols, height = 7*numRows-1, units = 'cm', dpi = 600)
+
 	return(plot_6.data)
 }
 
@@ -706,7 +687,7 @@ getTEDG <- function(mutation_gene_table){
 
 	input.table <- mutation_gene_table
 	selected_geneList <- as.character(colnames(input.table))
-  
+
 	#calculating TEDG edge table
 	temp <- rep(0,length(selected_geneList))
 	edge.matrix <- temp
@@ -751,8 +732,8 @@ getTEDG <- function(mutation_gene_table){
 	colnames(edge.table) <- c('geneA','geneB','weight','label')
 	rownames(edge.table) <- c(1:nrow(edge.table))
 
-	write.table(edge.table,"../Output/TEDGedge.txt",row.names = F,quote = F,sep = '\t')
-	
+	write.table(edge.table,"TEDGedge.txt",row.names = F,quote = F,sep = '\t')
+
 	#calculating TEDG node table
 	Mut.freq <- cbind(rep(0,length(selected_geneList)),rep(0,length(selected_geneList)),rep(0,length(selected_geneList)))
 	for(i in 1:length(selected_geneList)){
@@ -760,20 +741,20 @@ getTEDG <- function(mutation_gene_table){
 	  Mut.freq[i,2] <- length(which(input.table[,i] == 'R'))
 	  Mut.freq[i,3] <- length(which(input.table[,i] == 'C')) *2
 	}
-	
+
 	sample.size <- rep(0,length(selected_geneList))
 	for(i in 1:length(selected_geneList)){
 	  sample.size[i] <- Mut.freq[i,1] + Mut.freq[i,2] + Mut.freq[i,3]
 	}
-	
+
 	ins <- rep(0, length(selected_geneList))
 	outs <- rep(0,length(selected_geneList))
 	for(i in 1:length(selected_geneList)){
 	  ins[i] <- length(which(edge.matrix[,i]>0))
 	  outs[i] <- length(which(edge.matrix[i,]>0))
 	}
-	
-	
+
+
 	pcdf <- rep(1,length(selected_geneList))
 	for(i in 1:length(pcdf)){
 	  if(ins[i] < outs[i]){
@@ -784,100 +765,40 @@ getTEDG <- function(mutation_gene_table){
 	    pcdf[i] <- binom.test(outs[i], ins[i]+outs[i], 0.5)$p.value
 	  }
 	}
-	
+
 	fc = log2((outs+1) / (ins+1)) # positive = early; negative = late.
-	
+
 	node.table <- data.frame(selected_geneList,pcdf,fc,sample.size)
 	colnames(node.table) <- c('Gene','P_CDF',	'FC',	'Occurrence')
-	write.table(node.table,"../Output/TEDGnode.txt",row.names = F,quote = F,sep = '\t')
-	
+	write.table(node.table,"TEDGnode.txt",row.names = F,quote = F,sep = '\t')
+
 	node <- data.frame(node.table)
 	edge <- data.frame(edge.table)
-	
-	net <- graph_from_data_frame(d=edge[which(as.numeric(edge$weight) > 0),], vertices=node, directed=T) 
-	
+
+	net <- graph_from_data_frame(d=edge[which(as.numeric(edge$weight) > 0),], vertices=node, directed=T)
+
 	color.gradient <- function(x, colors=c("darkgreen","yellow","red"), colsteps=10000) {
 	  return( colorRampPalette(colors) (colsteps) [ findInterval(x, seq(min(x),max(x), length.out=colsteps)) ] )
 	}
 	V(net)$color <- color.gradient(V(net)$FC)
-	
+
 	V(net)$size <- V(net)$Occurrence*0.2+5
 	E(net)$width <- as.numeric(E(net)$weight)/2
-	
+
 	E(net)$label <- NA
-	
+
 	E(net)$arrow.size <- 0.4
 	E(net)$edge.color <- "gray90"
-	
+
 	graph_attr(net, "layout") <- layout_with_lgl
-	
-	#node.table
-	#edge.table
-	
-	plot(net) 
-	
-	return(edge.table)
+	plot(net)
+	#figure_7<-rbind(ggplotGrob(net), size="last")
+	#grid.draw(figure_7)
+	#ggsave(file="Figure7_TEDG.pdf", plot=figure_7, bg = 'white', width = 16, height = 12, units = 'cm', dpi = 600)
+
+
+#	return(edge.table)
 }
 
-```
 
-
-## CELLO Pipeline
-```{r}
-savi.table<-somaticfilter("../../input.savi.txt",20,1,5)
-head(savi.table[,1:12])
-```
-
-```{r}
-knownDriverGene <- c('LTBP4','PTPN11','NF1','RB1','PDGFRA','PIK3CG','PIK3R1','PIK3CA','PTEN','EGFR','IDH1','ATRX','TP53')
-
-mutNum.table <- mutStatistics(savi.table,5)
-
-head(mutNum.table)
-```
-
-```{r}
-mutGenes.table <- mutGenes(savi.table, knownDriverGene,5,remove_LOW = TRUE)
-head(mutGenes.table)
-```
-
-```{r fig.asp = 0.65, fig.width = 12, fig.align = 'center' ,dpi=300}
-mutLandscape(mutNum.table,mutGenes.table)
-```
-
-```{r fig.asp = 1, fig.width = 10, fig.align = 'center',dpi=300}
-coMutation(mutGenes.table)
-```
-
-```{r fig.asp = 0.7, fig.width = 10, fig.align = 'center',dpi=300}
-freq.table <- freqMutation(savi.table, knownDriverGene,mutGenes.table,5)
-```
-
-```{r fig.asp = 0.35, fig.width = 15, fig.align = 'center',dpi=300}
-HM.table <- hyperMutation(savi.table,15,350,1.2)
-```
-
-```{r fig.asp = 0.7, fig.width = 10, fig.align = 'center',dpi=300}
-Cluster.table <- evoCluster(mutNum.table)
-```
-
-```{r fig.asp = 0.7, fig.width = 12, fig.align = 'center',dpi=300}
-switch.table <- mutSwitch(savi.table,knownDriverGene,5,20)
-```
-
-
-```{r fig.asp = 0.7, fig.width = 12, fig.align = 'center',dpi=300}
-selGene <-c('LTBP4','IDH1','ATRX','TP53','NF1','MSH6','PIK3CG','PIK3R1','PIK3CA','PTEN','EGFR')
-allMutGenes.table <- mutGenes(savi.table, selGene,5,remove_LOW = TRUE)
-TEDGedge.table <- getTEDG(allMutGenes.table)
-```
- 
- 
-```{r}
-TEDGedge.table
-```
-
-## Reference
-[1] Wang, J., Cazzato, E., Ladewig, E., Frattini, V., Rosenbloom, D. I., Zairis, S., ... & Lee, J. K. (2016). Clonal evolution of glioblastoma under therapy. Nature Genetics, 48(7), 768-776.
-
-[2] Wang, J., Khiabanian, H., Rossi, D., Fabbri, G., Gattei, V., Forconi, F., ... & Pasqualucci, L. (2014). Tumor evolutionary directed graphs and the history of chronic lymphocytic leukemia. Elife, 3, e02869.
+#User pro
