@@ -1,4 +1,4 @@
-function hsig = getMutsigs(savi)
+function hsig = mutSignature(savi)
 % Mutational Signature Analysis
 % Temozolomide-induced signature
 

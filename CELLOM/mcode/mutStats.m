@@ -1,5 +1,4 @@
-function [savi,kdtables] = markKnownDriver(kdlist,savi)
-% Add one column to savi table for known drivers
+function [savi,kdtables] = mutStats(kdlist,savi)
 kdtables.kdlist = kdlist;
 ng = numel(kdlist);
 nvar = size(savi,1);

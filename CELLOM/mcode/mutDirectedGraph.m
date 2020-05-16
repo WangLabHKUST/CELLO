@@ -1,10 +1,10 @@
-function G = getTEDG(savi,isdeconv)
+function G = mutDirectedGraph(savi,isdeconv)
 % TEDG: Tumor Evolutionary Directed Graphs
 
 evogenes = {'IDH1','PIK3CA','ATRX','PIK3R1','PTEN','TP53','PIK3CG','NF1','EGFR','MSH6','LTBP4'};
 
 ng = numel(evogenes);
-[~,kdstr] = markKnownDriver(evogenes,savi);
+[~,kdstr] = mutStats(evogenes,savi);
 
 ns = numel(kdstr.unicase);
 M = zeros(ns,ng);

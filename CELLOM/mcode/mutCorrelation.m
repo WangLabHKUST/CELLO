@@ -1,4 +1,4 @@
-function hcom = corrMut(kdstr)
+function hcom = mutCorrelation(kdstr)
 % plot mut-mut correlations: co-occurrence vs. mutually exclusive in
 % primary and recurrent tumor samples, respectively.
 

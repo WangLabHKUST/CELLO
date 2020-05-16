@@ -1,4 +1,4 @@
-function h3d = plot3Dmut(kdstr)
+function h3d = mutFrequency(kdstr)
 % Plot mutations on 3D space: primary, common and recurrence.
 
 genelist = kdstr.kdlist;
