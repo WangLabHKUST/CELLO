@@ -6,17 +6,13 @@ clc
 
 tic
 
-saviTable = readtable('../../input.savi.txt');
+%% Reading and filtering somatic mutations
 
-%% Filtering somatic mutations
-
-somaticfilter = saviTable.refdepth_Blood >= 20 & saviTable.altdepth_Blood <= 1 & saviTable.Sgt1_max_frequency >= 5;
-saviTable = saviTable(somaticfilter,:);
+saviTable = mutRead('../../input.savi.txt');
 
 %% Calculating stats of known driver genes
 
-knownDrivers = {'TP53','ATRX','IDH1','EGFR','PTEN','PIK3CA','PIK3R1','PIK3CG','PDGFRA','RB1','NF1','PTPN11','LTBP4'};
-[saviTable,mutGeneTable] = mutStats(knownDrivers,saviTable);
+[saviTable,mutGeneTable] = mutStats({'TP53','ATRX','IDH1','EGFR','PTEN','PIK3CA','PIK3R1','PIK3CG','PDGFRA','RB1','NF1','PTPN11','LTBP4'},saviTable);
 
 %% Generating longitudinal mutational landscape
 
