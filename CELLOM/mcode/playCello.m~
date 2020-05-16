@@ -1,5 +1,6 @@
-## 1-Click to Run CELLO pipeline: playCello.m
-```matlab
+% CELLO.M: Cancer EvoLution for LOngitudinal data, a Matlab toolbox.
+% Main Function: playCello.m
+
 close all
 clear
 clc
@@ -34,17 +35,14 @@ h3d = mutFrequency(mutGeneTable);
 
 hsig = mutSignature(saviTable);
 
-%% Projecting phylogenetic trees onto Moduli space
+%% Projec
 
 hmod = mutTreeClustering(saviTable);
 
-%% Constructing tumor evolutionary directed graph
+%% TEDG with deconv?
 
 G = mutDirectedGraph(saviTable, true);
 
-%% Identifying clonal switching events
+%% Clonal Switching
 
 hsw = mutSwitch(saviTable,'PDGFRA');
-
-toc
-```

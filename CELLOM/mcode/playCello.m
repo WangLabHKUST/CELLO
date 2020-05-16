@@ -9,40 +9,42 @@ tic
 
 saviTable = readtable('../../input.savi.txt');
 
-%% Preprocessing: Filtering somatic mutations
+%% Filtering somatic mutations
 
 somaticfilter = saviTable.refdepth_Blood >= 20 & saviTable.altdepth_Blood <= 1 & saviTable.Sgt1_max_frequency >= 5;
 saviTable = saviTable(somaticfilter,:);
 
-%% Marking key driver genes ...
+%% Calculating stats of known driver genes
 
 knownDrivers = {'TP53','ATRX','IDH1','EGFR','PTEN','PIK3CA','PIK3R1','PIK3CG','PDGFRA','RB1','NF1','PTPN11','LTBP4'};
 [saviTable,mutGeneTable] = mutStats(knownDrivers,saviTable);
 
-%% Mutational Landscape of Longitudinal Data
+%% Generating longitudinal mutational landscape
 
 hland = mutLandscape(saviTable, mutGeneTable);
 
-%% co-occurrence of mutations
+%% Analyzing mutation correlation
 
 hcom = mutCorrelation(mutGeneTable);
 
-%% 3D mutation plot
+%% Comparing mutation frequency
 
 h3d = mutFrequency(mutGeneTable);
 
-%% Mutational Signature Analysis
+%% Extracting mutational signature
 
 hsig = mutSignature(saviTable);
 
-%% Moduli Space
+%% Projecting phylogenetic trees onto Moduli space
 
 hmod = mutTreeClustering(saviTable);
 
-%% TEDG with deconv?
+%% Constructing tumor evolutionary directed graph
 
 G = mutDirectedGraph(saviTable, true);
 
-%% Clonal Switching
+%% Identifying clonal switching events
 
 hsw = mutSwitch(saviTable,'PDGFRA');
+
+toc
