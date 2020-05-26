@@ -1,4 +1,4 @@
-function hsw = plotSwitch(savi,gene)
+function hsw = mutSwitch(savi,gene)
 % Plot clonal swithcing event
 
 allgenelist = unique(savi.Gene_Name);
@@ -6,7 +6,7 @@ allgenelist = unique(savi.Gene_Name);
 if ~strcmp(gene,allgenelist)
     error('The input gene is not found in the mutant gene list!')
 else
-    savi = markKnownDriver({gene},savi);
+    savi = mutStats({gene},savi);
 end
 
 genelist = gene;

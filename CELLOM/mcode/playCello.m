@@ -1,5 +1,6 @@
-## 1-Click to Run CELLO pipeline: playCello.m
-```matlab
+% CELLO.M: Cancer EvoLution for LOngitudinal data, a Matlab toolbox.
+% Main Function: playCello.m
+
 close all
 clear
 clc
@@ -43,4 +44,3 @@ G = mutDirectedGraph(saviTable, true);
 hsw = mutSwitch(saviTable,'PDGFRA');
 
 toc
-```

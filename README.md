@@ -16,14 +16,26 @@ Cancer EvoLution for LOngitudinal data (CELLO) is a MATLAB toolbox for comprehen
 * [MATLAB](./CELLOM/CELLOM.md)
 * [R](./CELLOR/CELLOR.md)
 
-To ensure reproducibility and improve usability, we have prepared a docker version of CELLO, based and the R implementation. The docker can be retrieved by
+## Docker
+
+To ensure reproducibility and improve usability, we have prepared a [docker](https://www.docker.com/) version of CELLO, based on the R implementation. To use the docker image, the first step is to install docker in your computer. Please follow the instructions from [their website](https://www.docker.com/) to install it.
+
+The docker image of CELLO can be retrieved by:
 ```
 docker pull qmu123/cellor
 ```
-Alternatively, one can build the docker image from scratch. The docker file is uploaded to [this repository](./CELLOR/Dockerfile). Download the Dockerfile and CELLOR.R into a directory, then build the image from there by:
+
+Then you can run docker to analyze your own data. The working directory in the docker image is /home/CELLOR. In order to access your own data, you can bind your folder to a different place, for example, /home/data:
+```
+docker run -it --rm -v /your/local/path/:/home/data qmu123/cellor
+```
+This runs the docker in interactive mode, so you can follow the [tutorial](./CELLOR/CELLOR.md) to analyze the data step by step. By default the resulting figures are placed in the /home/CELLOR folder, and you can move them to your local folder.
+
+Finally, if one wants to make changes to the docker image, the docker file is also uploaded here. Download the [Dockerfile](./CELLOR/Dockerfile) and [CELLO.R](./CELLOR/CELLO.R) into a directory, then make your changes, and build your new image from there by:
 ```
 docker build -t cellor .
 ```
+
 ## Datasets
 
 The input [SAVI report](./input.savi.txt) consists of a list of genetic variants from 90 glioblastoma patients [1].

@@ -1,4 +1,4 @@
-function hland = getLandscape(savi, kdstr)
+function hland = mutLandscape(savi, kdstr)
 % Build a landscape of mutations for longitudinal data
 % Bar + Grid
 

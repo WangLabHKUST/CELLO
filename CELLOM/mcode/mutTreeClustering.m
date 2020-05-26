@@ -1,4 +1,4 @@
-function hmod = getModuli(savi)
+function hmod = mutTreeClustering(savi)
 % Embed evolutionary trees into Moduli Space
 
 [unicase, ~, cix] = unique(savi.CaseID);
