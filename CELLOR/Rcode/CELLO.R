@@ -1,45 +1,23 @@
----
-title: "CELLO: Cancer EvoLutionary analysis using LOngitudinal genomic data"
-author: "SONG, Dong"
-date: "1/15/2020"
-output: github_document
----
+# CELLOR
+#frame_files <- lapply(sys.frames(), function(x) x$ofile)
+#frame_files <- Filter(Negate(is.null), frame_files)
+#TOPDIR <- dirname(frame_files[[length(frame_files)]])
+#setwd(TOPDIR)
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-## Ownership
-Wang Lab at HKUST (http://wang-lab.ust.hk/)
-
-## Introduction
-Cancer EvoLutionary analysis using LOngitudinal genomic data (CELLO) is a protocal for comprehensive analysis of longitudinal genomic sequencing data in cancer. It was originally developed by Jiguang Wang [1,2], and was then packed up by Biaobin Jiang and Dong Song in MATLAB and R seperately. This code was written in R.
-
-## Datasets
-The input SAVI report (input.savi.txt) consists of a list of genetic variants from 90 glioblastoma patients.
-
-## Loading required R packages
-```{r}
-library(ggplot2)
-library(gridExtra)
 library(grid)
+library(gridExtra)
 library(reshape2)
-library(ggtern)
-library(ggalt)
+library(ggplot2)
 library("igraph")
-```
 
-## Loading CELLO functions
-......
-
-```{r , include=FALSE}
 gg_color_hue <- function(n) {
   hues = seq(15, 375, length = n + 1)
   hcl(h = hues, l = 65, c = 120)[1:n]
 }
 
+
 #function 1: read in savi report & preprocessing the data
-somaticfilter <- function(savi_report_file,refdepth_Blood_cutoff,altdepth_Blood_cutoff,freq_cutoff){
+mutRead <- function(savi_report_file,refdepth_Blood_cutoff,altdepth_Blood_cutoff,freq_cutoff){
 	savi <- read.delim(savi_report_file)
 	savi <- savi[which( savi$refdepth_Blood >= refdepth_Blood_cutoff & savi$altdepth_Blood <= altdepth_Blood_cutoff & savi$Sgt1_max_frequency >= freq_cutoff ),]
 	savi[is.na(savi)] <- 0
@@ -49,15 +27,19 @@ somaticfilter <- function(savi_report_file,refdepth_Blood_cutoff,altdepth_Blood_
 }
 
 
-#function 2: analysis the number of mutations in primary & recurrent samples
-mutStatistics <- function(savi_table, freq_cutoff){
+#function 2: analysis the number of mutations in primary & recurrent samples; and analysis the mutation information of selected genes
+mutStats <- function(savi_table, selected_geneList, freq_cutoff,remove_LOW=TRUE){
 
 	savi <- savi_table
 	cutoff <- freq_cutoff
+	if(remove_LOW == TRUE){
+		savi<-savi[which(!(savi$Effect_Impact %in% 'LOW')),]  ## exclude the synonymous_variant
+	}
+
 	case <- unique(savi$CaseID)
 
 
-
+	#counting mutations
 	mut.primary <- rep(0,length(case))
 	mut.recurrence <- rep(0,length(case))
 	mut.common <- rep(0,length(case))
@@ -71,21 +53,9 @@ mutStatistics <- function(savi_table, freq_cutoff){
 	mutation_num_table<- data.frame( case, mut.primary, mut.common, mut.recurrence )
 	colnames(mutation_num_table)<-c('Patients','Primary','Common','Recurrent')
 
-	return(mutation_num_table)
-}
 
-
-#function 3： analysis the mutation information of selected genes
-mutGenes <- function(savi_table, selected_geneList, freq_cutoff,remove_LOW=TRUE){
-
-	savi <- savi_table
-	cutoff <- freq_cutoff
-	if(remove_LOW == TRUE){
-		savi<-savi[which(!(savi$Effect_Impact %in% 'LOW')),]  ## exclude the synonymous_variant
-	}
-
+	#analysis for selected genes
 	selGene <- selected_geneList
-	case <- unique(savi$CaseID)
 
 	gene.Matrix <- rep('N',length(case))
 	for( i in 2:length(selGene)){
@@ -113,11 +83,14 @@ mutGenes <- function(savi_table, selected_geneList, freq_cutoff,remove_LOW=TRUE)
 
 	colnames(gene.Matrix) <- selGene
 	rownames(gene.Matrix) <- case
-	return(gene.Matrix)
+
+	returnList <- list("mutNum.table" = mutation_num_table, "mutGenes.table" = gene.Matrix)
+	return(returnList)
+
 }
 
 
-#function 4: plot the mutation landscape
+#function 3: plot the mutation landscape
 mutLandscape <- function(mutation_num_table, mutation_gene_table){
 
 	plot_1a.data <- data.frame(rep(mutation_num_table$Patients,3), c( c(mutation_num_table$Recurrent), c(mutation_num_table$Common), c(mutation_num_table$Primary) ),
@@ -142,9 +115,10 @@ mutLandscape <- function(mutation_num_table, mutation_gene_table){
 
 	orderID <<- c(1:nrow(plot_1a.data))
 
+
 	F1a.plot<-ggplot()+theme_classic()
 	F1a.plot<-F1a.plot+geom_bar(data=plot_1a.data,aes(x=reorder(Patients,orderID),y=Mutations,fill=Groups),width=0.7,color="black",stat='identity',position=position_stack())
-	F1a.plot<-F1a.plot+theme(panel.background=element_rect(fill='transparent',color='black'),plot.margin=unit(c(0.4,2,0.4,1),'lines'),
+	F1a.plot<-F1a.plot+theme(panel.background=element_rect(fill='transparent',color='black'),plot.margin=unit(c(0.4,2,0.4,2),'lines'),
 	                      plot.title=element_text(size=34,vjust=0.5,hjust=0.5,face='bold.italic',color='transparent'),text=element_text(size=24,vjust=1.4,hjust=0.5,face='bold'),
 						  legend.key.width=unit(0.6,'cm'),legend.key.height=unit(0.8,'cm'),legend.position=c(0.92,0.8),legend.text=element_text(size=16,face='bold.italic'),
 						  axis.text.x=element_text(size=16,angle=90,vjust=0.5,hjust=0,face='bold',color='black'),axis.text.y=element_text(size=14,vjust=0.5,hjust=1,face='bold',color='black'),
@@ -152,42 +126,79 @@ mutLandscape <- function(mutation_num_table, mutation_gene_table){
 	F1a.plot<-F1a.plot+ggtitle(NULL)+xlab(NULL)+ylab('Number of somatic mutations')+scale_fill_manual(name=NULL,values=c('black',gg_color_hue(2)[2],gg_color_hue(2)[1]),labels=c('Recurrence','Common','Initial'))
 	F1a.plot<-F1a.plot+scale_y_continuous(expand=c(0,0),limits=c(0,15000),breaks=seq(0,1500,100))+scale_x_discrete(breaks=x.scale)
 
-	split1 <- F1a.plot + coord_cartesian(ylim = c(0, 390)) +
-	  theme(legend.position='none',plot.margin=unit(c(0.2,0.6,0.1,2),'lines')) +ylab(NULL)
-	split2 <- F1a.plot + coord_cartesian(ylim = c(1000, 1200)) + ggtitle(NULL)+
-	  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(), legend.position = 'none',plot.margin=unit(c(0.5,0.6,0.2,2),'lines'))+ylab(NULL)
+	yaxis <- mutation_num_table[,2] + mutation_num_table[,3] + mutation_num_table[,4]
+	maxy <- max(yaxis)
 
-	#F1a.plot<-F1a.plot+geom_step() + scale_y_continuous(breaks = c(seq(0, 200, by = 20),seq(0, 1500, by = 100)))
+	if(maxy > 1000){
+		split1 <- F1a.plot + coord_cartesian(ylim = c(0, 390)) +
+	 	theme(legend.position='none',plot.margin=unit(c(0.2,0.6,0.1,2),'lines')) +ylab(NULL)
+		split2 <- F1a.plot + coord_cartesian(ylim = c(1000, 1200)) + ggtitle(NULL)+
+		theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(), legend.position = 'none',plot.margin=unit(c(1,0.6,0.2,2),'lines'))+ylab(NULL)
+	}
+	else if(maxy > 800){
+		split1 <- F1a.plot + coord_cartesian(ylim = c(0, 390)) +
+	 	theme(legend.position='none',plot.margin=unit(c(0.2,0.6,0.1,2),'lines')) +ylab(NULL)
+		split2 <- F1a.plot + coord_cartesian(ylim = c(800, 1000)) + ggtitle(NULL)+
+		theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(), legend.position = 'none',plot.margin=unit(c(1,0.6,0.2,2),'lines'))+ylab(NULL)
+	}
+	else if(maxy > 600){
+		split1 <- F1a.plot + coord_cartesian(ylim = c(0, 390)) +
+	 	theme(legend.position='none',plot.margin=unit(c(0.2,0.6,0.1,2),'lines')) +ylab(NULL)
+		split2 <- F1a.plot + coord_cartesian(ylim = c(600, 800)) + ggtitle(NULL)+
+		theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(), legend.position = 'none',plot.margin=unit(c(1,0.6,0.2,2),'lines'))+ylab(NULL)
+	}
+	else if(maxy > 400){
+		split1 <- F1a.plot + coord_cartesian(ylim = c(0, 600)) +
+	 	theme(legend.position='none',plot.margin=unit(c(1,0.6,0.1,2),'lines')) +ylab(NULL)
+	}
+	else if(maxy > 200){
+		split1 <- F1a.plot + coord_cartesian(ylim = c(0, 400)) +
+	 	theme(legend.position='none',plot.margin=unit(c(1,0.6,0.1,2),'lines')) +ylab(NULL)
+	}
+	else{
+		split1 <- F1a.plot + coord_cartesian(ylim = c(0, 200)) +
+	 	theme(legend.position='none',plot.margin=unit(c(1,0.6,0.1,2),'lines')) +ylab(NULL)
+	}
 
-	figure_1a<-rbind(ggplotGrob(split2),ggplotGrob(split1),size="first")
-	#	grid.draw(figure_1a)
-	#	ggsave(file="mutation_numbers.pdf", plot=figure_1a,bg = 'white', width = 40, height = 15, units = 'cm', dpi = 600)
 
 	plot_1b.data <- melt(mutation_gene_table)
 
 
 	F1b.plot<-ggplot()+theme_classic()
 	F1b.plot<-F1b.plot+geom_tile(data = plot_1b.data,aes(x=Var1,y=Var2,fill=value),color='black',width=0.7,height=0.7,stat='identity')
-	F1b.plot<-F1b.plot+scale_fill_manual(name=NULL,values=c(N='white',C=gg_color_hue(2)[2],P=gg_color_hue(2)[1],R='black'),labels=c(N='None',C='Common',P='Initial',R='Recurrence'))
-	F1b.plot<-F1b.plot+theme(panel.background=element_rect(fill='transparent',color='black'),plot.margin=unit(c(0.15,0.6,3,2),'lines'),plot.title=element_text(size=24,vjust=0.5,hjust=0.5,face='bold.italic'),
-	                           text=element_text(size=24,vjust=1.4,hjust=0.5,face='bold'),legend.key.width=unit(0.6,'cm'),legend.key.height=unit(0.68,'cm'),legend.position=c(0.5,-0.1),
+	F1b.plot<-F1b.plot+scale_fill_manual(name=NULL,values=c(N='white',C=gg_color_hue(2)[2],P=gg_color_hue(2)[1],R='black'),labels=c(N='None',C='Common',P='Primary',R='Recurrence'))
+	F1b.plot<-F1b.plot+theme(panel.background=element_rect(fill='transparent',color='black'),plot.margin=unit(c(0.15,1,1,2),'lines'),plot.title=element_text(size=24,vjust=0.5,hjust=0.5,face='bold.italic'),
+	                           text=element_text(size=24,vjust=1.4,hjust=0.5,face='bold'),legend.key.width=unit(0.6,'cm'),legend.key.height=unit(0.68,'cm'),legend.position='bottom',
 							              legend.direction="horizontal",legend.text=element_text(size=16,face='bold.italic'),axis.text.y=element_text(size=14,vjust=0.5,hjust=1,face='bold.italic',color='black'),
 							            axis.text.x=element_blank(),axis.title.x=element_text(size=24,vjust=0,hjust=0.5,face='bold',color='black'),axis.title.y=element_text(size=24,hjust=0.5,vjust=2,face='bold',color='black'))
 	F1b.plot<-F1b.plot+scale_x_discrete(breaks=x.scale,position = "top")+xlab(NULL)+ylab(NULL)
 
-	figure_1<-rbind(ggplotGrob(split2),ggplotGrob(split1),ggplotGrob(F1b.plot),size="first")
-	panels <- figure_1$layout$t[grep("panel", figure_1$layout$name)]
-	figure_1$heights[panels][1] <- unit(0.513,'null')
+
+	gene.scale = 1 + (ncol(mutation_gene_table) - 12)/12
+
+	if(maxy > 600){
+		figure_1<-rbind(ggplotGrob(split2),ggplotGrob(split1),ggplotGrob(F1b.plot),size="last")
+		panels <- figure_1$layout$t[grep("panel", figure_1$layout$name)]
+		figure_1$heights[panels][1] <- unit(0.513,'null')
+		figure_1$heights[panels][3] <- unit(gene.scale,'null')
+	}
+	else{
+		figure_1<-rbind(ggplotGrob(split1),ggplotGrob(F1b.plot),size="last")
+		panels <- figure_1$layout$t[grep("panel", figure_1$layout$name)]
+		figure_1$heights[panels][3] <- unit(gene.scale,'null')
+	}
+
+
 	grid.draw(figure_1)
-	ggsave(file="../Output/Figure1_mutation_landscape.pdf", plot=figure_1,bg = 'white', width = 40, height = 33, units = 'cm', dpi = 600)
+	ggsave(file="Figure1_mutation_landscape.pdf", plot=figure_1,bg = 'white', width = 40, height = 33, units = 'cm', dpi = 600)
 
 	x.scale <<- NULL
 	orderID <<- NULL
 }
 
 
-#function 5: Co-mutation analysis
-coMutation <- function(mutation_gene_table){
+#function 4: Co-mutation analysis
+mutCorrelation <- function(mutation_gene_table){
 	mutGene.P <- mutation_gene_table
 	mutGene.P[mutGene.P == 'C' | mutGene.P == 'P'] <- 1
 	mutGene.P[mutGene.P == 'R' | mutGene.P == 'N'] <- 0
@@ -282,14 +293,15 @@ coMutation <- function(mutation_gene_table){
 
 	figure_2<-rbind(ggplotGrob(coMut.plot),size="first")
 	grid.draw(figure_2)
-	ggsave(file="../Output/Figure2_CoMutation.pdf", plot=figure_2,bg = 'white', width = 20, height = 22, units = 'cm', dpi = 600)
+	ggsave(file="Figure2_CoMutation.pdf", plot=figure_2,bg = 'white', width = 20, height = 22, units = 'cm', dpi = 600)
 
 	x.scale <<- NULL
 	orderID <<- NULL
 }
 
-#function 6: 3D-bubble plot of mutation frequency
-freqMutation <- function(savi_table, selected_geneList, mutation_gene_table, freq_cutoff){
+
+#function 5: 3D-bubble plot of mutation frequency
+mutFrequency<- function(savi_table, selected_geneList, mutation_gene_table, freq_cutoff){
 
 	savi <- savi_table
 	cutoff <- freq_cutoff
@@ -365,14 +377,14 @@ freqMutation <- function(savi_table, selected_geneList, mutation_gene_table, fre
 	figure_3 <- rbind(ggplotGrob(freq.plot),size="first")
 	grid.draw(figure_3)
 
-	ggsave(file="../Output/Figure3_3D_bubble_plot.pdf", plot=figure_3,bg = 'white', width = 28, height = 20, units = 'cm', dpi = 600)
+	ggsave(file="Figure3_3D_bubble_plot.pdf", plot=figure_3,bg = 'white', width = 28, height = 20, units = 'cm', dpi = 600)
 
 	return(Mut.freq)
 }
 
 
-#function 7: hypermutation analysis
-hyperMutation <- function(savi_table, mut_freq_cutoff, mut_num_cutoff, HM_score_cutoff){
+#function 6: hypermutation analysis
+mutSignature <- function(savi_table, mut_freq_cutoff, mut_num_cutoff, HM_score_cutoff){
 
 	varPresentcut <- mut_freq_cutoff #Please be aware that the threshold here is different from that of figure 1 (to filter noise)
 	cutMutLoad <<- mut_num_cutoff
@@ -554,11 +566,12 @@ hyperMutation <- function(savi_table, mut_freq_cutoff, mut_num_cutoff, HM_score_
 	colnames(plot_4c.data) <- c('Groups','Ratio','PRmark')
 
 	#Wilcoxson rank sum testing
-	Pvalue.P_R <- wilcox.test(Ratio ~ Groups,data = plot_4c.data,subset = Groups %in% c('Primary','Rec_nonHM'),alternative = "two.sided",paired = F,conf.level = 0.05)$p.value
-	Pvalue.P_HR <- wilcox.test(Ratio ~ Groups,data = plot_4c.data,subset = Groups %in% c('Primary','Rec_HM'),alternative = "two.sided",paired = F,conf.level = 0.05)$p.value
-	Pvalue.R_HR <- wilcox.test(Ratio ~ Groups,data = plot_4c.data,subset = Groups %in% c('Rec_nonHM','Rec_HM'),alternative = "two.sided",paired = F,conf.level = 0.05)$p.value
-
-	cat(paste0("P-value between Primary and NonHM Recurrence: ", Pvalue.P_R,"\n","P-value between Primary and HM Recurrence: ", Pvalue.P_HR,"\n","P-value between NonHM Recurrence and HM Recurrence: ", Pvalue.R_HR,"\n"))
+	if(length(which(plot_4c.data[,1] == 'Rec_HM')) > 0 & length(which(plot_4c.data[,1] == 'Primary')) > 0 & length(which(plot_4c.data[,1] == 'Rec_nonHM')) > 0 ){
+		Pvalue.P_R <- wilcox.test(Ratio ~ Groups,data = plot_4c.data,subset = Groups %in% c('Primary','Rec_nonHM'),alternative = "two.sided",paired = F,conf.level = 0.05)$p.value
+		Pvalue.P_HR <- wilcox.test(Ratio ~ Groups,data = plot_4c.data,subset = Groups %in% c('Primary','Rec_HM'),alternative = "two.sided",paired = F,conf.level = 0.05)$p.value
+		Pvalue.R_HR <- wilcox.test(Ratio ~ Groups,data = plot_4c.data,subset = Groups %in% c('Rec_nonHM','Rec_HM'),alternative = "two.sided",paired = F,conf.level = 0.05)$p.value
+		cat(paste0("P-value between Primary and NonHM Recurrence: ", Pvalue.P_R,"\n","P-value between Primary and HM Recurrence: ", Pvalue.P_HR,"\n","P-value between NonHM Recurrence and HM Recurrence: ", Pvalue.R_HR,"\n"))
+	}
 
 	#figure 2a (hypermuation detection)
 	orderID<<-c(1:nrow(plot_4c.data))
@@ -579,18 +592,18 @@ hyperMutation <- function(savi_table, mut_freq_cutoff, mut_num_cutoff, HM_score_
 
 	figure_4<-cbind(ggplotGrob(HM.plot),ggplotGrob(Fra.plot),ggplotGrob(Box.plot),size="first")
 	grid.draw(figure_4)
-	ggsave(file="../Output/Figure4_hypermutation_analysis.pdf", plot=figure_4,bg = 'white', width = 48, height = 17, units = 'cm', dpi = 600)
+	ggsave(file="Figure4_hypermutation_analysis.pdf", plot=figure_4,bg = 'white', width = 48, height = 17, units = 'cm', dpi = 600)
 
 	cutMutLoad <<- NULL
 	cutHMscore <<- NULL
 	orderID_4b <<- NULL
 	orderID <<- NULL
-	return(plot_4a.data)
+	return(plot_4c.data)
 }
 
 
-#function 8: plot the evoluationary clusters
-evoCluster <- function(mutation_num_table){
+#function 7: plot the evoluationary clusters
+mutTreeClustering <- function(mutation_num_table){
 
 	tmp.sum <- mutation_num_table$Primary + mutation_num_table$Recurrent + mutation_num_table$Common
 	plot_5.data <- data.frame( c(mutation_num_table$Primary/tmp.sum) ,c(mutation_num_table$Recurrent/tmp.sum),c(mutation_num_table$Common/tmp.sum))
@@ -608,6 +621,9 @@ evoCluster <- function(mutation_num_table){
 	colnames(plot_5.data) <- c('Primary','Recurrence','Common','Cluster')
 	plot_5.data$id <- 1:nrow(plot_5.data)
 
+  require(ggtern)
+  require(ggalt)
+
 	Ternary.plot <- ggtern(data=plot_5.data,aes(Primary,Common,Recurrence,color=Cluster,fill=Cluster))+theme_bw()
 	Ternary.plot <- Ternary.plot + geom_encircle(alpha=0.2,size=1)+geom_point(size=4.5,alpha=0.6)+guides(fill=FALSE)
 	Ternary.plot <- Ternary.plot + scale_colour_manual(name=NULL,values=c('black',gg_color_hue(2)[1],gg_color_hue(2)[2]),labels=c('Cluster 1','Cluster 2','Cluster 3'))
@@ -619,13 +635,17 @@ evoCluster <- function(mutation_num_table){
 
 	figure5<-rbind(ggplotGrob(Ternary.plot),size="last")
 	grid.draw(figure5)
-	ggsave(file="../Output/Figure5_Case_Clustering.pdf", plot=figure5,bg = 'white', width = 24, height = 20, units = 'cm', dpi = 600)
+	ggsave(file="Figure5_Case_Clustering.pdf", plot=figure5,bg = 'white', width = 24, height = 20, units = 'cm', dpi = 600)
+
+  #detach("package:ggalt", unload=TRUE)
+  #detach("package:ggtern", unload=TRUE)
+  unloadNamespace("ggalt")
+  unloadNamespace("ggtern")
 
 	return(plot_5.data)
 }
 
-
-#function 9: Clonal mutation replacement in selected genes
+#function 8: Clonal mutation replacement in selected genes
 mutSwitch <- function(savi_table, selected_geneList, freq_cutoff_low,freq_cutoff_high){
 
 	savi <- savi_table[which(!(savi_table$Effect_Impact %in% 'LOW')),]
@@ -669,6 +689,10 @@ mutSwitch <- function(savi_table, selected_geneList, freq_cutoff_low,freq_cutoff
 	}
 
 	plot_6.data <- data.frame(CaseGene,mutation.types,x.content,y.content,color.factor,stringsAsFactors = F)
+	if(nrow(plot_6.data) == 0){
+		cat(paste0("No switch event detected in the given gene list!\n"))
+		return(plot_6.data)
+	}
 
 	Switch.plot<-ggplot()+theme_classic()
 	Switch.plot<-Switch.plot+geom_point(data = plot_6.data,aes(x=x.content,y=y.content,color=as.factor(color.factor),shape=as.factor(color.factor)),size=3,alpha=0.9)
@@ -695,18 +719,18 @@ mutSwitch <- function(savi_table, selected_geneList, freq_cutoff_low,freq_cutoff
 	Switch.plot<-Switch.plot+facet_wrap( ~ CaseGene,ncol=numCols )
 	figure_6<-rbind(ggplotGrob(Switch.plot), size="last")
 	grid.draw(figure_6)
-	ggsave(file="../Output/Figure6_mutation_Switch.pdf", plot=figure_6, bg = 'white', width = 7*numCols, height = 7*numRows-1, units = 'cm', dpi = 600)
-	
+	ggsave(file="Figure6_mutation_Switch.pdf", plot=figure_6, bg = 'white', width = 7*numCols, height = 7*numRows-1, units = 'cm', dpi = 600)
+
 	return(plot_6.data)
 }
 
 
-#function 10:
-getTEDG <- function(mutation_gene_table){
+#function 9: Infer mutation order in tumor evolutionary history
+mutDirectedGraph <- function(mutation_gene_table){
 
 	input.table <- mutation_gene_table
 	selected_geneList <- as.character(colnames(input.table))
-  
+
 	#calculating TEDG edge table
 	temp <- rep(0,length(selected_geneList))
 	edge.matrix <- temp
@@ -751,29 +775,29 @@ getTEDG <- function(mutation_gene_table){
 	colnames(edge.table) <- c('geneA','geneB','weight','label')
 	rownames(edge.table) <- c(1:nrow(edge.table))
 
-	write.table(edge.table,"../Output/TEDGedge.txt",row.names = F,quote = F,sep = '\t')
-	
+	write.table(edge.table,"TEDGedge.txt",row.names = F,quote = F,sep = '\t')
+
 	#calculating TEDG node table
 	Mut.freq <- cbind(rep(0,length(selected_geneList)),rep(0,length(selected_geneList)),rep(0,length(selected_geneList)))
 	for(i in 1:length(selected_geneList)){
 	  Mut.freq[i,1] <- length(which(input.table[,i] == 'P'))
 	  Mut.freq[i,2] <- length(which(input.table[,i] == 'R'))
-	  Mut.freq[i,3] <- length(which(input.table[,i] == 'C')) *2
+	  Mut.freq[i,3] <- length(which(input.table[,i] == 'C')) * 2
 	}
-	
+
 	sample.size <- rep(0,length(selected_geneList))
 	for(i in 1:length(selected_geneList)){
 	  sample.size[i] <- Mut.freq[i,1] + Mut.freq[i,2] + Mut.freq[i,3]
 	}
-	
+
 	ins <- rep(0, length(selected_geneList))
 	outs <- rep(0,length(selected_geneList))
 	for(i in 1:length(selected_geneList)){
 	  ins[i] <- length(which(edge.matrix[,i]>0))
 	  outs[i] <- length(which(edge.matrix[i,]>0))
 	}
-	
-	
+
+
 	pcdf <- rep(1,length(selected_geneList))
 	for(i in 1:length(pcdf)){
 	  if(ins[i] < outs[i]){
@@ -784,100 +808,43 @@ getTEDG <- function(mutation_gene_table){
 	    pcdf[i] <- binom.test(outs[i], ins[i]+outs[i], 0.5)$p.value
 	  }
 	}
-	
+
 	fc = log2((outs+1) / (ins+1)) # positive = early; negative = late.
-	
+
 	node.table <- data.frame(selected_geneList,pcdf,fc,sample.size)
 	colnames(node.table) <- c('Gene','P_CDF',	'FC',	'Occurrence')
-	write.table(node.table,"../Output/TEDGnode.txt",row.names = F,quote = F,sep = '\t')
-	
+	write.table(node.table,"TEDGnode.txt",row.names = F,quote = F,sep = '\t')
+
 	node <- data.frame(node.table)
 	edge <- data.frame(edge.table)
-	
-	net <- graph_from_data_frame(d=edge[which(as.numeric(edge$weight) > 0),], vertices=node, directed=T) 
-	
+
+	net <- graph_from_data_frame(d=edge[which(as.numeric(edge$weight) > 0),], vertices=node, directed=T)
+
 	color.gradient <- function(x, colors=c("darkgreen","yellow","red"), colsteps=10000) {
 	  return( colorRampPalette(colors) (colsteps) [ findInterval(x, seq(min(x),max(x), length.out=colsteps)) ] )
 	}
 	V(net)$color <- color.gradient(V(net)$FC)
-	
+
 	V(net)$size <- V(net)$Occurrence*0.2+5
 	E(net)$width <- as.numeric(E(net)$weight)/2
-	
+
 	E(net)$label <- NA
-	
+
 	E(net)$arrow.size <- 0.4
 	E(net)$edge.color <- "gray90"
-	
+
 	graph_attr(net, "layout") <- layout_with_lgl
-	
-	#node.table
-	#edge.table
-	
-	plot(net) 
-	
-	return(edge.table)
+ 	pdf(file="Figure7_TEDG.pdf", bg = 'white', width = 8, height = 6)
+	plot(net)
+ 	dev.off()
+	#figure_7<-rbind(ggplotGrob(net), size="last")
+	#grid.draw(figure_7)
+	#ggsave(file="Figure7_TEDG.pdf", plot=figure_7, bg = 'white', width = 16, height = 12, units = 'cm', dpi = 600)
+
+	plot(net)
+
+	returnList <- list("edge.table" = edge.table, "node.table" = node.table)
+	return(returnList)
 }
 
-```
 
-
-## CELLO Pipeline
-```{r}
-savi.table<-somaticfilter("../../input.savi.txt",20,1,5)
-head(savi.table[,1:12])
-```
-
-```{r}
-knownDriverGene <- c('LTBP4','PTPN11','NF1','RB1','PDGFRA','PIK3CG','PIK3R1','PIK3CA','PTEN','EGFR','IDH1','ATRX','TP53')
-
-mutNum.table <- mutStatistics(savi.table,5)
-
-head(mutNum.table)
-```
-
-```{r}
-mutGenes.table <- mutGenes(savi.table, knownDriverGene,5,remove_LOW = TRUE)
-head(mutGenes.table)
-```
-
-```{r fig.asp = 0.65, fig.width = 12, fig.align = 'center' ,dpi=300}
-mutLandscape(mutNum.table,mutGenes.table)
-```
-
-```{r fig.asp = 1, fig.width = 10, fig.align = 'center',dpi=300}
-coMutation(mutGenes.table)
-```
-
-```{r fig.asp = 0.7, fig.width = 10, fig.align = 'center',dpi=300}
-freq.table <- freqMutation(savi.table, knownDriverGene,mutGenes.table,5)
-```
-
-```{r fig.asp = 0.35, fig.width = 15, fig.align = 'center',dpi=300}
-HM.table <- hyperMutation(savi.table,15,350,1.2)
-```
-
-```{r fig.asp = 0.7, fig.width = 10, fig.align = 'center',dpi=300}
-Cluster.table <- evoCluster(mutNum.table)
-```
-
-```{r fig.asp = 0.7, fig.width = 12, fig.align = 'center',dpi=300}
-switch.table <- mutSwitch(savi.table,knownDriverGene,5,20)
-```
-
-
-```{r fig.asp = 0.7, fig.width = 12, fig.align = 'center',dpi=300}
-selGene <-c('LTBP4','IDH1','ATRX','TP53','NF1','MSH6','PIK3CG','PIK3R1','PIK3CA','PTEN','EGFR')
-allMutGenes.table <- mutGenes(savi.table, selGene,5,remove_LOW = TRUE)
-TEDGedge.table <- getTEDG(allMutGenes.table)
-```
- 
- 
-```{r}
-TEDGedge.table
-```
-
-## Reference
-[1] Wang, J., Cazzato, E., Ladewig, E., Frattini, V., Rosenbloom, D. I., Zairis, S., ... & Lee, J. K. (2016). Clonal evolution of glioblastoma under therapy. Nature Genetics, 48(7), 768-776.
-
-[2] Wang, J., Khiabanian, H., Rossi, D., Fabbri, G., Gattei, V., Forconi, F., ... & Pasqualucci, L. (2014). Tumor evolutionary directed graphs and the history of chronic lymphocytic leukemia. Elife, 3, e02869.
