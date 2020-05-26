@@ -85,19 +85,19 @@ head(stats$mutGenes.table)
 mutLandscape(stats$mutNum.table,stats$mutGenes.table)
 ```
 
-<img src="../Output/unnamed-chunk-7-1.png" style="display: block; margin: auto;" />
+<img src="../Output/gbm/unnamed-chunk-7-1.png" style="display: block; margin: auto;" />
 
 ``` r
 mutCorrelation(stats$mutGenes.table)
 ```
 
-<img src="../Output/unnamed-chunk-8-1.png" style="display: block; margin: auto;" />
+<img src="../Output/gbm/unnamed-chunk-8-1.png" style="display: block; margin: auto;" />
 
 ``` r
 freq.table <- mutFrequency(savi.table, knownDriverGene,stats$mutGenes.table,5)
 ```
 
-<img src="../Output/unnamed-chunk-9-1.png" style="display: block; margin: auto;" />
+<img src="../Output/gbm/unnamed-chunk-9-1.png" style="display: block; margin: auto;" />
 
 ``` r
 head(freq.table)
@@ -115,7 +115,7 @@ head(freq.table)
 hm.table <- mutSignature(savi.table,15,350,1.2)
 ```
 
-<img src="../Output/unnamed-chunk-10-1.png" style="display: block; margin: auto;" />
+<img src="../Output/gbm/unnamed-chunk-10-1.png" style="display: block; margin: auto;" />
 
     ## P-value between Primary and NonHM Recurrence: 0.229260285986123
     ## P-value between Primary and HM Recurrence: 2.59649100398582e-06
@@ -125,13 +125,13 @@ hm.table <- mutSignature(savi.table,15,350,1.2)
 cluster.table <- mutTreeClustering(stats$mutNum.table)
 ```
 
-<img src="../Output/unnamed-chunk-11-1.png" style="display: block; margin: auto;" />
+<img src="../Output/gbm/unnamed-chunk-11-1.png" style="display: block; margin: auto;" />
 
 ``` r
 switch.table <- mutSwitch(savi.table,knownDriverGene,5,20)
 ```
 
-<img src="../Output/unnamed-chunk-12-1.png" style="display: block; margin: auto;" />
+<img src="../Output/gbm/unnamed-chunk-12-1.png" style="display: block; margin: auto;" />
 
 ``` r
 selGene <-c('LTBP4','IDH1','ATRX','TP53','NF1','MSH6','PIK3CG','PIK3R1','PIK3CA','PTEN','EGFR')
@@ -139,7 +139,7 @@ selStats <- mutStats(savi.table, selGene,5,remove_LOW = TRUE)
 TEDG <- mutDirectedGraph(selStats$mutGenes.table)
 ```
 
-<img src="../Output/unnamed-chunk-13-1.png" style="display: block; margin: auto;" />
+<img src="../Output/gbm/unnamed-chunk-13-1.png" style="display: block; margin: auto;" />
 
 ``` r
 TEDG$node.table

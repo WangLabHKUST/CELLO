@@ -17,8 +17,8 @@ seperately. This code was written in R.
 
 ## Datasets
 
-The input SAVI report (input.savi.txt) consists of a list of genetic
-variants from 90 glioblastoma
+The input SAVI report (bladder.input.savi.txt) consists of a list of
+genetic variants from 28 bladder
     patients.
 
 ## Loading CELLO package
@@ -92,19 +92,19 @@ head(stats$mutGenes.table)
 mutLandscape(stats$mutNum.table,stats$mutGenes.table)
 ```
 
-<img src="../Output/unnamed-chunk-7-1.png" style="display: block; margin: auto;" />
+<img src="../Output/bladder/unnamed-chunk-7-1.png" style="display: block; margin: auto;" />
 
 ``` r
 mutCorrelation(stats$mutGenes.table)
 ```
 
-<img src="../Output/unnamed-chunk-8-1.png" style="display: block; margin: auto;" />
+<img src="../Output/bladder/unnamed-chunk-8-1.png" style="display: block; margin: auto;" />
 
 ``` r
 freq.table <- mutFrequency(savi.table, knownDriverGene,stats$mutGenes.table,5)
 ```
 
-<img src="../Output/unnamed-chunk-9-1.png" style="display: block; margin: auto;" />
+<img src="../Output/bladder/unnamed-chunk-9-1.png" style="display: block; margin: auto;" />
 
 ``` r
 head(freq.table)
@@ -122,13 +122,13 @@ head(freq.table)
 hm.table <- mutSignature(savi.table,15,350,1.2)
 ```
 
-<img src="../Output/unnamed-chunk-10-1.png" style="display: block; margin: auto;" />
+<img src="../Output/bladder/unnamed-chunk-10-1.png" style="display: block; margin: auto;" />
 
 ``` r
 cluster.table <- mutTreeClustering(stats$mutNum.table)
 ```
 
-<img src="../Output/unnamed-chunk-11-1.png" style="display: block; margin: auto;" />
+<img src="../Output/bladder/unnamed-chunk-11-1.png" style="display: block; margin: auto;" />
 
 ``` r
 switch.table <- mutSwitch(savi.table,knownDriverGene,5,20)
@@ -142,7 +142,7 @@ selStats <- mutStats(savi.table, selGene,5,remove_LOW = TRUE)
 TEDG <- mutDirectedGraph(selStats$mutGenes.table)
 ```
 
-<img src="../Output/unnamed-chunk-13-1.png" style="display: block; margin: auto;" />
+<img src="../Output/bladder/unnamed-chunk-13-1.png" style="display: block; margin: auto;" />
 
 ``` r
 TEDG$node.table

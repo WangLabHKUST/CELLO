@@ -6,7 +6,7 @@ output: github_document
 ---
 
 ```{r setup, global_options, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.path='../Output/', warning=FALSE, message=FALSE)
+knitr::opts_chunk$set(echo = TRUE, fig.path='../Output/gbm/', warning=FALSE, message=FALSE)
 ```
 
 ## Ownership

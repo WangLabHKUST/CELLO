@@ -6,7 +6,7 @@ output: github_document
 ---
 
 ```{r setup, global_options, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.path='../Output/', warning=FALSE, message=FALSE)
+knitr::opts_chunk$set(echo = TRUE, fig.path='../Output/bladder/', warning=FALSE, message=FALSE)
 ```
 
 ## Ownership
@@ -16,7 +16,7 @@ Wang Lab at HKUST (http://wang-lab.ust.hk/)
 Cancer EvoLutionary analysis using LOngitudinal genomic data (CELLO) is a protocal for comprehensive analysis of longitudinal genomic sequencing data in cancer. It was originally developed by Jiguang Wang [1,2], and was then packed up by Biaobin Jiang and Dong Song in MATLAB and R seperately. This code was written in R.
 
 ## Datasets
-The input SAVI report (input.savi.txt) consists of a list of genetic variants from 90 glioblastoma patients.
+The input SAVI report (bladder.input.savi.txt) consists of a list of genetic variants from 28 bladder patients.
 
 ## Loading CELLO package
 ```{r}
