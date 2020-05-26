@@ -14,7 +14,7 @@ Active Development
 ## Introduction
 Cancer EvoLution for LOngitudinal data (CELLO) is a MATLAB toolbox for comprehensive analysis of longitudinal genomic sequencing data in cancer. It was originally developed by Jiguang Wang [1,2], and the implementation has both MATLAB and R versions:
 * [MATLAB](./CELLOM/CELLOM.md)
-* [R](./CELLOR/CELLOR.md)
+* [R](./CELLOR/Rcode/CELLO_gbm.md)
 
 ## Docker
 
