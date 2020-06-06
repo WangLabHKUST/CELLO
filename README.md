@@ -25,7 +25,7 @@ The docker image of CELLO can be retrieved by:
 docker pull qmu123/cellor
 ```
 
-Then you can run CELLO docker to analyze your own longitudinal data. The working directory in the docker image is `/home/CELLOR`. In order to access your own data at your own folder `/your/local/path` inside the docker, you can bind your own folder to a directory within the docker at, for example, `/home/data` using the following command:
+Then you can run CELLO docker to analyze your own longitudinal data. The working directory in the docker image is `/home/CELLOR`. In order to access your own data at your own folder at `/your/local/path` inside the docker, you can bind your own folder to a directory within the docker at, for example, `/home/data` using the following command:
 ```
 docker run -it --rm -v /your/local/path/:/home/data qmu123/cellor
 ```
