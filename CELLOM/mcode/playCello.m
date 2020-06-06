@@ -43,4 +43,8 @@ G = mutDirectedGraph(saviTable, true);
 
 hsw = mutSwitch(saviTable,'PDGFRA');
 
+%% Hypermutation extension to WES, targeted and RNA sequencing
+
+HMtable = main_HM_cross_platforms('../../input.wes.savi.txt','../../input.targeted.savi.txt','../../input.rna.savi.txt');
+
 toc

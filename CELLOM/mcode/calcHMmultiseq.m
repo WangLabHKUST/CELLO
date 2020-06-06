@@ -31,4 +31,7 @@ for i = 1:numcases % for each sample
 end
 tmz(tmz < 0) = 0;
 
-Y = table(unicase, mutload, tmz);
+platform = cell(numcases,1);
+platform(:) = {unique(savi.SequencingPlatform)};
+
+Y = table(unicase, mutload, tmz, platform);

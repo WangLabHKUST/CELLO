@@ -1,18 +1,17 @@
+function HMtable = main_HM_cross_platforms(wesfile,tarfile,rnafile)
 % CELLO extension of hypermutation detection to WES, targeted and RNA-seq
 
-close all
-clear
-clc
-
 % Reading ...
-W = readtable('input.wes.savi.txt');
-T = readtable('input.targeted.savi.txt');
-R = readtable('input.rna.savi.txt');
+W = readtable(wesfile);
+T = readtable(tarfile);
+R = readtable(rnafile);
 
 % Calculating ...
 HW = calcHMmultiseq(W);
 HT = calcHMmultiseq(T);
 HR = calcHMmultiseq(R);
+
+HMtable = [HW;HT;HR];
 
 % Plotting ...
 hmcut = 1.3;
