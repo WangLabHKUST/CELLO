@@ -12,7 +12,7 @@
 Active Development
 
 ## Introduction
-Cancer EvoLution for LOngitudinal data (CELLO) is a MATLAB toolbox for comprehensive analysis of longitudinal genomic sequencing data in cancer. It was originally developed by Jiguang Wang [1,2,3], and the implementation has both MATLAB and R versions:
+Cancer EvoLution for LOngitudinal data (CELLO) is a MATLAB toolbox for comprehensive analysis of longitudinal genomic sequencing data in cancer. It was originally developed by Jiguang Wang [1], and the implementation has both MATLAB and R versions:
 * [MATLAB](./CELLOM/CELLOM.md)
 * [R](./CELLOR/Rcode/CELLO_gbm.md)
 
@@ -25,7 +25,7 @@ The docker image of CELLO can be retrieved by:
 docker pull qmu123/cellor
 ```
 
-Then you can run CELLO docker to analyze your own longitudinal data. The working directory in the docker image is `/home/CELLOR`. In order to access your own data at your own folder at `/your/local/path` inside the docker, you can bind your own folder to a directory within the docker at, for example, `/home/data` using the following command:
+Then you can run CELLO docker to analyze your own longitudinal data. The working directory in the docker image is `/home/CELLOR`. In order to access your own data at your own folder: `/your/local/path` inside the docker, you can bind your own folder to a directory within the docker at, for example, `/home/data` using the following command:
 ```
 docker run -it --rm -v /your/local/path/:/home/data qmu123/cellor
 ```
@@ -38,7 +38,8 @@ docker build -t cellor .
 
 ## Datasets
 
-The input [SAVI report](./input.savi.txt) consists of a list of genetic variants from 90 glioblastoma patients [2].
+* The input [SAVI report](./input.savi.txt) consists of a list of genetic variants from 90 glioblastoma patients before and after treatment [2].
+* The additional glioblastoma data (either treated or untreated) for hypermutation detection are available from 43 samples of whole-exome sequencing ([download](./input.wes.savi.txt)), 63 samples of targeted-DNA sequencing ([download](./input.targeted.savi.txt)), and 51 samples of RNA sequencing ([download](./input.rna.savi.txt)) [3].
 
 ## Reference
 
