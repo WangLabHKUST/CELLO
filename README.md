@@ -12,7 +12,7 @@
 Active Development
 
 ## Introduction
-Cancer EvoLution for LOngitudinal data (CELLO) is a MATLAB toolbox for comprehensive analysis of longitudinal genomic sequencing data in cancer. It was originally developed by Jiguang Wang [1], and the implementation has both MATLAB and R versions:
+Cancer EvoLution for LOngitudinal data (CELLO) is a MATLAB toolbox for comprehensive analysis of longitudinal genomic sequencing data in cancer. It was originally developed by Jiguang Wang [1,2,3], and the implementation has both MATLAB and R versions:
 * [MATLAB](./CELLOM/CELLOM.md)
 * [R](./CELLOR/Rcode/CELLO_gbm.md)
 
@@ -39,7 +39,7 @@ docker build -t cellor .
 ## Datasets
 
 * The input [SAVI report](./input.savi.txt) consists of a list of genetic variants from 90 glioblastoma patients before and after treatment [2].
-* The additional glioblastoma data (either treated or untreated) for hypermutation detection are available from 43 samples of whole-exome sequencing ([download](./input.wes.savi.txt)), 63 samples of targeted-DNA sequencing ([download](./input.targeted.savi.txt)), and 51 samples of RNA sequencing ([download](./input.rna.savi.txt)) [3].
+* The additional glioblastoma data (either treated or untreated) for hypermutation detection are available from [43 samples](./input.wes.savi.txt) of whole-exome sequencing, [63 samples](./input.targeted.savi.txt) of targeted-DNA sequencing, and [51 samples](./input.rna.savi.txt) of RNA sequencing [3].
 
 ## Reference
 
