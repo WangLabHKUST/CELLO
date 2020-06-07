@@ -112,7 +112,7 @@ head(freq.table)
     ## PIK3CG       2        1      5
 
 ``` r
-hm.table <- mutSignature(savi.table,15,350,1.2)
+hm.table <- mutSignature(savi.table,15,350,1.3)
 ```
 
 <img src="../Output/gbm/unnamed-chunk-10-1.png" style="display: block; margin: auto;" />

@@ -400,14 +400,6 @@ mutSignature <- function(savi_table, mut_freq_cutoff, mut_num_cutoff, HM_score_c
 	savi.P <- rep(0,length(savi[,1]))
 	savi.R <- rep(0,length(savi[,1]))
 	savi.isHM <- rep(0,length(savi[,1]))
-	
-	savi$isC2T <- ((savi$ref == 'C' & savi$alt == 'T') | (savi$ref == 'G' & savi$alt == 'A'))
-	savi$isCC2TC <- ((savi$ref == 'C' & savi$alt == 'T' & savi$varSurffix == 'C') | (savi$ref == 'G' & savi$alt == 'A' & savi$varPrefix == 'G'))
-	savi$isCT2TT <- ((savi$ref == 'C' & savi$alt == 'T' & savi$varSurffix == 'T') | (savi$ref == 'G' & savi$alt == 'A' & savi$varPrefix == 'A'))
-	#savi <- cbind(savi,isC2T,isCC2TC,isCT2TT)
-	
-	p0 = 1
-		
 	for(i in 1:length(case)){
 		#for each patient
 		saviPatient <- savi[which(savi$CaseID == case[i]),]
@@ -418,18 +410,11 @@ mutSignature <- function(savi_table, mut_freq_cutoff, mut_num_cutoff, HM_score_c
 		savi.P[as.integer(rownames(Pvar))] <- 1
 		Mut.Load.P[i] <- nPvar
 
-		#nPctga <- length( which((Pvar$ref == 'C' & Pvar$alt == 'T') | (Pvar$ref == 'G' & Pvar$alt == 'A') ) )
-		#nPccgg <- length( which((Pvar$ref == 'C' & Pvar$varSurffix == 'C') | (Pvar$ref == 'G' & Pvar$varPrefix == 'G') ) )
-		#nPcggc <- length( which((Pvar$ref == 'C' & Pvar$varSurffix == 'G') | (Pvar$ref == 'G' & Pvar$varPrefix == 'C') ) )
-    
-		pC2T <- sum(Pvar$isC2T) / (Mut.Load.P[i] + p0 )
-		pCC2TC <- sum(Pvar$isCC2TC) / (sum(Pvar$isC2T) + p0)
-		pCT2TT <- sum(Pvar$isCT2TT) / (sum(Pvar$isC2T) + p0)
-		
-		#cat(paste0(sum(Pvar$isC2T[which(savi.P==1)]),"\t\t\t\t", (Mut.Load.P[i] + p0 )," \t\t\t"," ", pCC2TC,"\t","3", pCT2TT,"\n"))
-		
-		#HM.Score.P[i] = (nPccgg - nPcggc)/(nPctga + 1) + nPctga/(nPvar + 1)
-		HM.Score.P[i] = pC2T + pCC2TC + sign(pCC2TC - pCT2TT) * pCT2TT 
+		nPctga <- length( which((Pvar$ref == 'C' & Pvar$alt == 'T') | (Pvar$ref == 'G' & Pvar$alt == 'A') ) )
+		nPccgg <- length( which((Pvar$ref == 'C' & Pvar$varSurffix == 'C') | (Pvar$ref == 'G' & Pvar$varPrefix == 'G') ) )
+		nPcggc <- length( which((Pvar$ref == 'C' & Pvar$varSurffix == 'G') | (Pvar$ref == 'G' & Pvar$varPrefix == 'C') ) )
+
+		HM.Score.P[i] = (nPccgg - nPcggc)/(nPctga + 1) + nPctga/(nPvar + 1)
 
 		#for recurrence
 		Rvar <- saviPatient[which((saviPatient$Blood_freq == 0) & (saviPatient$Recurrent_freq > varPresentcut)),]
@@ -437,16 +422,11 @@ mutSignature <- function(savi_table, mut_freq_cutoff, mut_num_cutoff, HM_score_c
 		savi.R[as.integer(rownames(Rvar))] <- 1
 		Mut.Load.R[i] <- nRvar
 
-		#nRctga <- length( which((Rvar$ref == 'C' & Rvar$alt == 'T') | (Rvar$ref == 'G' & Rvar$alt == 'A') ) )
-		#nRccgg <- length( which((Rvar$ref == 'C' & Rvar$varSurffix == 'C') | (Rvar$ref == 'G' & Rvar$varPrefix == 'G') ) )
-		#nRcggc <- length( which((Rvar$ref == 'C' & Rvar$varSurffix == 'G') | (Rvar$ref == 'G' & Rvar$varPrefix == 'C') ) )
-		
-		rC2T <- sum(Rvar$isC2T) / (Mut.Load.R[i] + p0 )
-		rCC2TC <- sum(Rvar$isCC2TC) / (sum(Rvar$isC2T) + p0)
-		rCT2TT <- sum(Rvar$isCT2TT) / (sum(Rvar$isC2T) + p0)
+		nRctga <- length( which((Rvar$ref == 'C' & Rvar$alt == 'T') | (Rvar$ref == 'G' & Rvar$alt == 'A') ) )
+		nRccgg <- length( which((Rvar$ref == 'C' & Rvar$varSurffix == 'C') | (Rvar$ref == 'G' & Rvar$varPrefix == 'G') ) )
+		nRcggc <- length( which((Rvar$ref == 'C' & Rvar$varSurffix == 'G') | (Rvar$ref == 'G' & Rvar$varPrefix == 'C') ) )
 
-		#HM.Score.R[i] = (nRccgg - nRcggc)/(nRctga + 1) + nRctga/(nRvar + 1)
-		HM.Score.R[i] = rC2T + rCC2TC + sign(rCC2TC - rCT2TT) * rCT2TT
+		HM.Score.R[i] = (nRccgg - nRcggc)/(nRctga + 1) + nRctga/(nRvar + 1)
 	}
 
 	HM.mark.P <- rep(0,length(case))
@@ -475,13 +455,12 @@ mutSignature <- function(savi_table, mut_freq_cutoff, mut_num_cutoff, HM_score_c
 						   axis.text.x=element_text(size=14,face='bold',color='black'),axis.title.x=element_text(size=18,face='bold',color='black'),axis.title.y=element_text(size=18,hjust=0.5,vjust=2,face='bold',color='black'))
 	HM.plot<-HM.plot+geom_hline(aes(yintercept=cutHMscore),color='black',size=.5,linetype='dashed')
 	HM.plot<-HM.plot+geom_vline(aes(xintercept=cutMutLoad),color='black',size=.5,linetype='dashed')
-	HM.plot<-HM.plot+scale_x_continuous(trans="log10",expand=c(0,0.1))
+	HM.plot<-HM.plot+scale_y_continuous(expand=c(0,0.1),limits=c(-0.5,1.8))+scale_x_continuous(trans="log10",expand=c(0,0.1))
 	HM.plot<-HM.plot+annotation_logticks(base = 10, sides = "b", scaled = TRUE,short = unit(0.1, "cm"), mid = unit(0.2, "cm"), long = unit(0.3, "cm"), colour = "black", size = 0.5, linetype = 1, alpha = 1)
 	#HM.plot<-HM.plot+scale_color_manual(name=NULL,values=c(R='black',P=gg_color_hue(2)[1]),labels=c(R='Recurrence',P='Primary'),guide = guide_legend(override.aes=list(size=4),nrow=2))+guides(size=FALSE)
 	HM.plot<-HM.plot+scale_fill_manual(name=NULL,values=c(R='black',P=gg_color_hue(2)[1]),labels=c(R='Recurrence',P='Primary'),guide = guide_legend(override.aes=list(size=4,shape=21),nrow=2))+guides(size=FALSE)
 	HM.plot<-HM.plot+scale_shape_manual(name=NULL,values=c(22,24),labels=c('1'='Hypermutation','0'='Non-hypermuation'),guide = guide_legend(override.aes=list(size=4),keywidth=0.1,keyheight=0.2,nrow=2))
-	#HM.plot<-HM.plot+scale_y_continuous(expand=c(0,0.1),limits=c(-0.5,1.8))
-	HM.plot<-HM.plot+scale_y_continuous(expand=c(0,0.1))
+
 	#figure_4a<-rbind(ggplotGrob(HM.plot),size="first")
 	#grid.draw(figure_4a)
 	#ggsave(file="hypermutation_detection.pdf", plot=figure_4a,bg = 'white', width = 18, height = 18, units = 'cm', dpi = 600)
@@ -867,7 +846,5 @@ mutDirectedGraph <- function(mutation_gene_table){
 	returnList <- list("edge.table" = edge.table, "node.table" = node.table)
 	return(returnList)
 }
-
-
 
 
