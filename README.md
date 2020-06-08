@@ -40,6 +40,7 @@ docker build -t cellor .
 
 * The input [SAVI report](./input.savi.txt) consists of a list of genetic variants from 90 glioblastoma patients before and after treatment [2].
 * The additional glioblastoma data (either treated or untreated) for hypermutation detection are available from [43 samples](./input.wes.savi.txt) of whole-exome sequencing, [63 samples](./input.targeted.savi.txt) of targeted-DNA sequencing, and [51 samples](./input.rna.savi.txt) of RNA sequencing [3].
+* Note that the germline mutations have been removed from all the above shared data for protection of individual privacy.
 
 ## Reference
 
