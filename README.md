@@ -42,6 +42,12 @@ docker build -t cellor .
 * The additional glioblastoma data (either treated or untreated) for hypermutation detection are available from [43 samples](./input.wes.savi.txt) of whole-exome sequencing, [63 samples](./input.targeted.savi.txt) of targeted-DNA sequencing, and [51 samples](./input.rna.savi.txt) of RNA sequencing [3].
 * Note that the germline mutations have been removed from all the above shared data for protection of individual privacy.
 
+## How to Cite CELLO
+
+If you use CELLO in your research, please cite:
+
+Biaobin Jiang*, Dong Song*, Quanhua Mu, and Jiguang Wang#. (2020). CELLO: a longitudinal data analysis toolbox untangling cancer evolution. **Quantitative Biology**, Accepted.
+
 ## Reference
 
 [1] Jiguang Wang, Hossein Khiabanian, Davide Rossi, Giulia Fabbri, Valter Gattei, Francesco Forconi, Luca Laurenti, Roberto Marasca, Giovanni Del Poeta, Robin Foà, Laura Pasqualucci, Gianluca Gaidano, Raul Rabadan. (2014). [Tumor evolutionary directed graphs and the history of chronic lymphocytic leukemia.](https://elifesciences.org/articles/02869) **Elife**, 3, e02869.
