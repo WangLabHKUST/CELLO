@@ -1,4 +1,4 @@
-# CELLO - Cancer EvoLution for LOngitudinal data
+# CELLO - untangling Cancer EvoLution from LOngitudinal sequencing
 
 
 <div align=center><img width="300" src="logo.jpg" style="display: block; margin: auto;" ></div>
