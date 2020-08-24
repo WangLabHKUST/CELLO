@@ -46,7 +46,7 @@ docker build -t cellor .
 
 If you use CELLO in your research, please cite:
 
-Biaobin Jiang*, Dong Song*, Quanhua Mu, and Jiguang Wang#. (2020). CELLO: a longitudinal data analysis toolbox untangling cancer evolution. **Quantitative Biology**, Accepted.
+Biaobin Jiang*, Dong Song*, Quanhua Mu, and Jiguang Wang#. (2020). CELLO: a longitudinal data analysis toolbox untangling cancer evolution. **Quantitative Biology**, [Link](https://doi.org/10.1007/s40484-020-0218-1).
 
 ## Reference
 
